@@ -26,14 +26,15 @@ class MXHXSourceResolverTest extends Test {
 	private var resolver:MXHXSourceResolver;
 
 	public function setupClass():Void {
-		var classPaths = [
+		var haxeStdPath = Sys.getEnv("HAXE_STD_PATH");
+		if (haxeStdPath == null) {
 			#if windows
-			"C:/HaxeToolkit/haxe/std",
+			haxeStdPath = "C:/HaxeToolkit/haxe/std";
 			#else
-			"/usr/local/lib/haxe/std",
+			haxeStdPath = "/usr/local/lib/haxe/std";
 			#end
-			Path.join([Sys.getCwd(), "src/fixtures"])
-		];
+		}
+		var classPaths = [haxeStdPath, Path.join([Sys.getCwd(), "src/fixtures"])];
 		var parsed:Array<{pack:Array<String>, decls:Array<haxeparser.Data.TypeDecl>}> = [];
 		var directories = classPaths.copy();
 		while (directories.length > 0) {
