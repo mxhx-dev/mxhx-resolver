@@ -14,7 +14,6 @@
 
 package mxhx.resolver.source;
 
-import haxe.Exception;
 import haxe.macro.Expr.ComplexType;
 import haxe.macro.Expr.Field;
 import haxe.macro.Expr.MetadataEntry;
@@ -659,7 +658,7 @@ class MXHXSourceResolver implements IMXHXResolver {
 
 	private static function getEventName(eventMeta:MetadataEntry):String {
 		if (eventMeta.name != ":event") {
-			throw new Exception("getEventNames() requires :event meta");
+			throw "getEventNames() requires :event meta";
 		}
 		var typedExprDef = null; // Context.typeExpr(eventMeta.params[0]).expr;
 		if (typedExprDef == null) {
@@ -703,7 +702,7 @@ class MXHXSourceResolver implements IMXHXResolver {
 	**/
 	private static function getEventType(eventMeta:MetadataEntry):String {
 		if (eventMeta.name != ":event") {
-			throw new Exception("getEventType() requires :event meta");
+			throw "getEventType() requires :event meta";
 		}
 		var typedExprType = null; // Context.typeExpr(eventMeta.params[0]).t;
 		return switch (typedExprType) {
@@ -728,7 +727,7 @@ class MXHXSourceResolver implements IMXHXResolver {
 			return null;
 		}
 		if (defaultPropertyMeta.params == null || defaultPropertyMeta.params.length != 1) {
-			throw new Exception('The @${defaultPropertyMeta.name} meta must have one property name');
+			throw 'The @${defaultPropertyMeta.name} meta must have one property name';
 		}
 		var param = defaultPropertyMeta.params[0];
 		var propertyName:String = null;
@@ -741,7 +740,7 @@ class MXHXSourceResolver implements IMXHXResolver {
 			default:
 		}
 		if (propertyName == null) {
-			throw new Exception('The @${META_DEFAULT_XML_PROPERTY} meta param must be a string');
+			throw 'The @${META_DEFAULT_XML_PROPERTY} meta param must be a string';
 			return null;
 		}
 		return propertyName;
