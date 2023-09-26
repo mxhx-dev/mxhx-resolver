@@ -1,5 +1,6 @@
 package mxhx.resolver.source;
 
+#if haxeparser
 import mxhx.resolver.IMXHXFieldSymbol;
 import mxhx.parser.MXHXParser;
 import mxhx.IMXHXData;
@@ -1240,3 +1241,4 @@ class MXHXSourceResolverTest extends Test {
 		Assert.equals("fixtures.TestPropertiesClass", typeSymbol.qname);
 	}
 }
+#end

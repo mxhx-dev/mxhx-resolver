@@ -14,6 +14,7 @@
 
 package mxhx.resolver.source;
 
+#if haxeparser
 import haxe.macro.Expr.ComplexType;
 import haxe.macro.Expr.Field;
 import haxe.macro.Expr.MetadataEntry;
@@ -819,3 +820,4 @@ private typedef TypeDeclEx = {
 	moduleName:String,
 	name:String,
 }
+#end

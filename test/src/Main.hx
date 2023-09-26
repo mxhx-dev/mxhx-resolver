@@ -5,7 +5,7 @@ class Main {
 	public static function main():Void {
 		var runner = new Runner();
 		runner.addCase(new mxhx.resolver.macro.MXHXMacroResolverTest());
-		#if sys
+		#if (sys && haxeparser)
 		runner.addCase(new mxhx.resolver.source.MXHXSourceResolverTest());
 		#end
 
