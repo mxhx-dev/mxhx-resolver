@@ -1,0 +1,16 @@
+<componentPackage>
+  <component id="TestClass1" class="fixtures.TestClass1"/>
+  <component id="TestPropertiesClass" class="fixtures.TestPropertiesClass"/>
+  <component id="TestPropertiesSubclass1" class="fixtures.TestPropertiesSubclass1"/>
+  <component id="TestPropertiesSubclass2" class="fixtures.TestPropertiesSubclass2"/>
+  <component id="TestPropertyEnum" class="fixtures.TestPropertyEnum"/>
+  <component id="TestComplexEnum" class="fixtures.TestComplexEnum"/>
+  <component id="TestPropertyAbstractEnum" class="fixtures.TestPropertyAbstractEnum"/>
+  <component id="TestDefaultPropertyClass1" class="fixtures.TestDefaultPropertyClass1"/>
+  <component id="TestDefaultPropertyClass2" class="fixtures.TestDefaultPropertyClass2"/>
+  <component id="TestInlineComponentClass" class="fixtures.TestInlineComponentClass"/>
+  <component id="TestInlineComponentClassAbstractFromClass" class="fixtures.TestInlineComponentClassAbstractFromClass"/>
+  <component id="TestBuildMacro" class="fixtures.TestBuildMacro"/>
+  <component id="ArrayCollection" class="fixtures.ArrayCollection"/>
+  <component id="ThisClassHasADifferentNameThanItsModule" class="fixtures.ModuleWithClassThatHasDifferentName.ThisClassHasADifferentNameThanItsModule"/>
+</componentPackage>

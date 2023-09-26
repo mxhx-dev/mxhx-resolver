@@ -1,0 +1,10 @@
+-cp ../src
+-lib hxparse
+-D doc_gen
+--macro include("mxhx")
+--no-output
+-xml ../bin/xml/types.xml
+-js dummy.js
+
+--next
+-cmd haxelib run dox -o ../bin/api -i ../bin/xml/types.xml --include mxhx --toplevel-package mxhx --title "MXHX Parser API Reference" -theme ./mxhx-theme -D website "https://mxhx.dev" -D textColor 0x292522 -D source-path "https://github.com/mxhx-dev/mxhx-parser/tree/main/src/"

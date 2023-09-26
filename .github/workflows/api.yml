@@ -1,0 +1,30 @@
+name: API Reference
+
+on:
+  push:
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+      - uses: krdlab/setup-haxe@v1
+        with:
+          haxe-version: 4.0.5
+      - name: Set up Haxelib dependencies
+        run: |
+          haxelib install dox --quiet
+          haxelib git mxhx-parser https://github.com/mxhx-dev/mxhx-parser.git --quiet
+          haxelib dev mxhx-resolver $GITHUB_WORKSPACE
+      - name: Build API reference
+        working-directory: docs
+        run: haxe docs.hxml
+      - uses: actions/upload-artifact@v3
+        with:
+          name: mxhx-resolver-docs
+          path: bin/api/
+          if-no-files-found: error

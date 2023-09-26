@@ -1,0 +1,7 @@
+-cp ../src
+-cp src
+-lib mxhx-parser
+-lib utest
+-lib haxeparser
+-D mxhx-disable-experimental-warning
+--main Main

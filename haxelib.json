@@ -1,0 +1,14 @@
+{
+  "name": "mxhx-resolver",
+  "url": "https://feathersui.com/",
+  "license": "Apache",
+  "tags": ["xml", "mxhx", "markup", "gui"],
+  "description": "Resolves Haxe classes, fields, and other symbols from a parsed MXHX document",
+  "version": "1.0.0",
+  "classPath": "src",
+  "dependencies": {
+    "mxhx-parser": "git:https://github.com/mxhx-dev/mxhx-parser.git"
+  },
+  "contributors": ["bowlerhat"],
+  "releasenote": "Initial release"
+}

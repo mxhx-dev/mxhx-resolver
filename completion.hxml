@@ -1,0 +1,5 @@
+-cp src
+-cp src-dev
+-lib mxhx-parser
+-lib haxeparser
+--main Main
