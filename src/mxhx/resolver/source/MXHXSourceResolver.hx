@@ -721,7 +721,7 @@ class MXHXSourceResolver implements IMXHXResolver {
 		};
 	}
 
-	private static function getDefaultProperty(t:Definition<Any, Any>):String {
+	private static function getDefaultProperty(t:Definition<Dynamic, Dynamic>):String {
 		var defaultPropertyMeta = Lambda.find(t.meta, item -> item.name == META_DEFAULT_XML_PROPERTY
 			|| item.name == ":" + META_DEFAULT_XML_PROPERTY);
 		if (defaultPropertyMeta == null) {
@@ -747,7 +747,7 @@ class MXHXSourceResolver implements IMXHXResolver {
 		return propertyName;
 	}
 
-	private static function definitionAndTypeSymbolParamsToQname(classType:Definition<Any, Any>, pack:Array<String>, moduleName:String,
+	private static function definitionAndTypeSymbolParamsToQname(classType:Definition<Dynamic, Dynamic>, pack:Array<String>, moduleName:String,
 			?params:Array<IMXHXTypeSymbol>):String {
 		var qname = classType.name;
 		if (pack.length > 0) {
