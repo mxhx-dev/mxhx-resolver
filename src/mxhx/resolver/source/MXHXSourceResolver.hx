@@ -502,7 +502,7 @@ class MXHXSourceResolver implements IMXHXResolver {
 							default:
 								null;
 						}
-						qname += complexType?.qname ?? "%";
+						qname += complexType != null ? complexType.qname : "%";
 					}
 					qname += ">";
 				}
