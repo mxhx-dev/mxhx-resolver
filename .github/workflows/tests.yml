@@ -22,6 +22,7 @@ jobs:
         run: |
           haxelib install utest --quiet
           haxelib install hxcpp --quiet
+          haxelib git haxeparser https://github.com/HaxeCheckstyle/haxeparser.git --quiet
           haxelib git mxhx-parser https://github.com/mxhx-dev/mxhx-parser.git --quiet
           haxelib dev mxhx-resolver $GITHUB_WORKSPACE
       - name: Run Interpreter Tests
