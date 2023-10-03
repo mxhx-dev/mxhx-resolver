@@ -26,6 +26,7 @@ import mxhx.internal.resolver.MXHXEnumFieldSymbol;
 import mxhx.internal.resolver.MXHXEnumSymbol;
 import mxhx.internal.resolver.MXHXEventSymbol;
 import mxhx.internal.resolver.MXHXFieldSymbol;
+import mxhx.internal.resolver.MXHXInterfaceSymbol;
 import mxhx.resolver.IMXHXAbstractSymbol;
 import mxhx.resolver.IMXHXArgumentSymbol;
 import mxhx.resolver.IMXHXClassSymbol;
@@ -33,6 +34,7 @@ import mxhx.resolver.IMXHXEnumFieldSymbol;
 import mxhx.resolver.IMXHXEnumSymbol;
 import mxhx.resolver.IMXHXEventSymbol;
 import mxhx.resolver.IMXHXFieldSymbol;
+import mxhx.resolver.IMXHXInterfaceSymbol;
 import mxhx.resolver.IMXHXResolver;
 import mxhx.resolver.IMXHXSymbol;
 import mxhx.resolver.IMXHXTypeSymbol;
@@ -175,6 +177,9 @@ class MXHXMacroResolver implements IMXHXResolver {
 		switch (qnameMacroType) {
 			case TInst(t, params):
 				var classType = t.get();
+				if (classType.isInterface) {
+					return createMXHXInterfaceSymbolForClassType(classType, qnameParams);
+				}
 				return createMXHXClassSymbolForClassType(classType, qnameParams);
 			case TAbstract(t, params):
 				var abstractType = t.get();
@@ -346,6 +351,26 @@ class MXHXMacroResolver implements IMXHXResolver {
 		return new MXHXArgumentSymbol(functionArg.name, resolvedType, functionArg.opt);
 	}
 
+	private function createMXHXInterfaceSymbolForClassType(classType:ClassType, params:Array<IMXHXTypeSymbol>):IMXHXInterfaceSymbol {
+		var qname = macroBaseTypeAndTypeSymbolParamsToQname(classType, params);
+		var result = new MXHXInterfaceSymbol(classType.name, classType.pack.copy());
+		result.qname = qname;
+		result.module = classType.module;
+		// fields may reference this type, so make sure that it's available
+		// before parsing anything else
+		qnameLookup.set(qname, result);
+
+		result.interfaces = classType.interfaces.map(i -> {
+			var interfaceType = i.t.get();
+			var interfaceQName = macroBaseTypeToQname(interfaceType, i.params);
+			return cast resolveQname(interfaceQName);
+		});
+		result.params = params != null ? params : [];
+		result.fields = classType.fields.get().map(classField -> createMXHXFieldSymbolForClassField(classField));
+
+		return result;
+	}
+
 	private function createMXHXClassSymbolForClassType(classType:ClassType, params:Array<IMXHXTypeSymbol>):IMXHXClassSymbol {
 		var qname = macroBaseTypeAndTypeSymbolParamsToQname(classType, params);
 		var result = new MXHXClassSymbol(classType.name, classType.pack.copy());
@@ -362,6 +387,11 @@ class MXHXMacroResolver implements IMXHXResolver {
 			resolvedSuperClass = cast resolveQname(superClassQName);
 		}
 		result.superClass = resolvedSuperClass;
+		result.interfaces = classType.interfaces.map(i -> {
+			var interfaceType = i.t.get();
+			var interfaceQName = macroBaseTypeToQname(interfaceType, i.params);
+			return cast resolveQname(interfaceQName);
+		});
 		result.params = params != null ? params : [];
 		result.fields = classType.fields.get().map(classField -> createMXHXFieldSymbolForClassField(classField));
 		result.events = classType.meta.extract(":event").map(eventMeta -> {

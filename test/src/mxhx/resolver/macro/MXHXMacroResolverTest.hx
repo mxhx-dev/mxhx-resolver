@@ -3,9 +3,10 @@ package mxhx.resolver.macro;
 import mxhx.IMXHXTagData;
 import mxhx.parser.MXHXParser;
 import mxhx.resolver.IMXHXClassSymbol;
-import mxhx.resolver.macro.MXHXMacroResolver;
-import mxhx.resolver.IMXHXTypeSymbol;
 import mxhx.resolver.IMXHXFieldSymbol;
+import mxhx.resolver.IMXHXInterfaceSymbol;
+import mxhx.resolver.IMXHXTypeSymbol;
+import mxhx.resolver.macro.MXHXMacroResolver;
 import utest.Test;
 #if !macro
 import utest.Assert;
@@ -89,6 +90,12 @@ class MXHXMacroResolverTest extends Test {
 		var resolved = resolveQname("fixtures.TestPropertiesClass");
 		Assert.notNull(resolved);
 		Assert.equals("fixtures.TestPropertiesClass", resolved);
+	}
+
+	public function testResolveQnameFromLocalInterface():Void {
+		var resolved = resolveQname("fixtures.ITestPropertiesInterface");
+		Assert.notNull(resolved);
+		Assert.equals("fixtures.ITestPropertiesInterface", resolved);
 	}
 
 	public function testResolveAnyField():Void {
@@ -184,6 +191,12 @@ class MXHXMacroResolverTest extends Test {
 		var resolved = resolveQnameFieldType("fixtures.TestPropertiesClass", "strictlyTyped");
 		Assert.notNull(resolved);
 		Assert.equals("fixtures.TestPropertiesClass", resolved);
+	}
+
+	public function testResolveStrictlyTypedInterfaceField():Void {
+		var resolved = resolveQnameFieldType("fixtures.TestPropertiesClass", "strictInterface");
+		Assert.notNull(resolved);
+		Assert.equals("fixtures.ITestPropertiesInterface", resolved);
 	}
 
 	public function testResolveAbstractEnumValueField():Void {
@@ -371,7 +384,7 @@ class MXHXMacroResolverTest extends Test {
 					<mx:Float/>
 				</tests:any>
 			</tests:TestPropertiesClass>
-		', 129);
+		', 132);
 		Assert.notNull(resolvedFieldType);
 		Assert.equals("Any", resolvedFieldType);
 	}
@@ -383,7 +396,7 @@ class MXHXMacroResolverTest extends Test {
 					<mx:Array/>
 				</tests:array>
 			</tests:TestPropertiesClass>
-		', 129);
+		', 132);
 		Assert.notNull(resolvedFieldType);
 		Assert.equals("Array<String>", resolvedFieldType);
 	}
@@ -395,7 +408,7 @@ class MXHXMacroResolverTest extends Test {
 					<mx:Bool/>
 				</tests:boolean>
 			</tests:TestPropertiesClass>
-		', 129);
+		', 132);
 		Assert.notNull(resolvedFieldType);
 		Assert.equals("Bool", resolvedFieldType);
 	}
@@ -407,7 +420,7 @@ class MXHXMacroResolverTest extends Test {
 					<mx:Class>Float</mx:Class>
 				</tests:type>
 			</tests:TestPropertiesClass>
-		', 129);
+		', 132);
 		Assert.notNull(resolvedFieldType);
 		// TODO: fix the % that should be used only internally
 		Assert.equals("Class<Dynamic<%>>", resolvedFieldType);
@@ -420,7 +433,7 @@ class MXHXMacroResolverTest extends Test {
 					<mx:Date/>
 				</tests:date>
 			</tests:TestPropertiesClass>
-		', 129);
+		', 132);
 		Assert.notNull(resolvedFieldType);
 		Assert.equals("Date", resolvedFieldType);
 	}
@@ -432,7 +445,7 @@ class MXHXMacroResolverTest extends Test {
 					<mx:Struct/>
 				</tests:struct>
 			</tests:TestPropertiesClass>
-		', 129);
+		', 132);
 		Assert.notNull(resolvedFieldType);
 		// TODO: fix the % that should be used only internally
 		Assert.equals("Dynamic<%>", resolvedFieldType);
@@ -445,7 +458,7 @@ class MXHXMacroResolverTest extends Test {
 					<mx:EReg/>
 				</tests:ereg>
 			</tests:TestPropertiesClass>
-		', 129);
+		', 132);
 		Assert.notNull(resolvedFieldType);
 		Assert.equals("EReg", resolvedFieldType);
 	}
@@ -457,7 +470,7 @@ class MXHXMacroResolverTest extends Test {
 					<mx:Float/>
 				</tests:float>
 			</tests:TestPropertiesClass>
-		', 129);
+		', 132);
 		Assert.notNull(resolvedFieldType);
 		Assert.equals("Float", resolvedFieldType);
 	}
@@ -469,7 +482,7 @@ class MXHXMacroResolverTest extends Test {
 					<mx:Function/>
 				</tests:func>
 			</tests:TestPropertiesClass>
-		', 129);
+		', 132);
 		Assert.notNull(resolvedFieldType);
 		Assert.equals("haxe.Constraints.Function", resolvedFieldType);
 	}
@@ -481,7 +494,7 @@ class MXHXMacroResolverTest extends Test {
 					<mx:Function/>
 				</tests:funcTyped>
 			</tests:TestPropertiesClass>
-		', 129);
+		', 132);
 		Assert.notNull(resolvedFieldType);
 		Assert.equals("haxe.Constraints.Function", resolvedFieldType);
 	}
@@ -493,7 +506,7 @@ class MXHXMacroResolverTest extends Test {
 					<mx:Int/>
 				</tests:integer>
 			</tests:TestPropertiesClass>
-		', 129);
+		', 132);
 		Assert.notNull(resolvedFieldType);
 		Assert.equals("Int", resolvedFieldType);
 	}
@@ -505,7 +518,7 @@ class MXHXMacroResolverTest extends Test {
 					<mx:String/>
 				</tests:string>
 			</tests:TestPropertiesClass>
-		', 129);
+		', 132);
 		Assert.notNull(resolvedFieldType);
 		Assert.equals("String", resolvedFieldType);
 	}
@@ -517,7 +530,7 @@ class MXHXMacroResolverTest extends Test {
 					<mx:Struct/>
 				</tests:struct>
 			</tests:TestPropertiesClass>
-		', 129);
+		', 132);
 		Assert.notNull(resolvedFieldType);
 		// TODO: fix the % that should be used only internally
 		Assert.equals("Dynamic<%>", resolvedFieldType);
@@ -530,7 +543,7 @@ class MXHXMacroResolverTest extends Test {
 					<mx:UInt/>
 				</tests:unsignedInteger>
 			</tests:TestPropertiesClass>
-		', 129);
+		', 132);
 		Assert.notNull(resolvedFieldType);
 		Assert.equals("UInt", resolvedFieldType);
 	}
@@ -542,7 +555,7 @@ class MXHXMacroResolverTest extends Test {
 					<mx:Xml/>
 				</tests:xml>
 			</tests:TestPropertiesClass>
-		', 129);
+		', 132);
 		Assert.notNull(resolvedFieldType);
 		Assert.equals("Xml", resolvedFieldType);
 	}
@@ -554,7 +567,7 @@ class MXHXMacroResolverTest extends Test {
 					<tests:TestPropertyAbstractEnum/>
 				</tests:abstractEnumValue>
 			</tests:TestPropertiesClass>
-		', 129);
+		', 132);
 		Assert.notNull(resolvedFieldType);
 		Assert.equals("fixtures.TestPropertyAbstractEnum", resolvedFieldType);
 	}
@@ -566,7 +579,7 @@ class MXHXMacroResolverTest extends Test {
 					<tests:TestPropertyEnum/>
 				</tests:enumValue>
 			</tests:TestPropertiesClass>
-		', 129);
+		', 132);
 		Assert.notNull(resolvedFieldType);
 		Assert.equals("fixtures.TestPropertyEnum", resolvedFieldType);
 	}
@@ -578,7 +591,7 @@ class MXHXMacroResolverTest extends Test {
 					<tests:Float/>
 				</tests:canBeNull>
 			</tests:TestPropertiesClass>
-		', 129);
+		', 132);
 		Assert.notNull(resolvedFieldType);
 		Assert.equals("Null<Float>", resolvedFieldType);
 	}
@@ -590,9 +603,21 @@ class MXHXMacroResolverTest extends Test {
 					<tests:TestPropertiesClass/>
 				</tests:strictlyTyped>
 			</tests:TestPropertiesClass>
-		', 129);
+		', 132);
 		Assert.notNull(resolvedFieldType);
 		Assert.equals("fixtures.TestPropertiesClass", resolvedFieldType);
+	}
+
+	public function testResolveFieldTypeStrictInterface():Void {
+		var resolvedFieldType = resolveTagType('
+			<tests:TestPropertiesClass xmlns:mx="https://ns.mxhx.dev/2024/basic" xmlns:tests="https://ns.mxhx.dev/2024/tests">
+				<tests:strictInterface>
+					<tests:TestPropertiesClass/>
+				</tests:strictInterface>
+			</tests:TestPropertiesClass>
+		', 132);
+		Assert.notNull(resolvedFieldType);
+		Assert.equals("fixtures.ITestPropertiesInterface", resolvedFieldType);
 	}
 
 	// ---- resolve field value type
@@ -825,6 +850,18 @@ class MXHXMacroResolverTest extends Test {
 				</tests:strictlyTyped>
 			</tests:TestPropertiesClass>
 		', 159);
+		Assert.notNull(resolvedFieldType);
+		Assert.equals("fixtures.TestPropertiesClass", resolvedFieldType);
+	}
+
+	public function testResolveFieldValueTypeStrictInterface():Void {
+		var resolvedFieldType = resolveTagType('
+			<tests:TestPropertiesClass xmlns:mx="https://ns.mxhx.dev/2024/basic" xmlns:tests="https://ns.mxhx.dev/2024/tests">
+				<tests:strictInterface>
+					<tests:TestPropertiesClass/>
+				</tests:strictlyTyped>
+			</tests:strictInterface>
+		', 161);
 		Assert.notNull(resolvedFieldType);
 		Assert.equals("fixtures.TestPropertiesClass", resolvedFieldType);
 	}

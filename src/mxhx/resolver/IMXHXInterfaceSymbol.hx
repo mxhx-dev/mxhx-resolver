@@ -15,32 +15,16 @@
 package mxhx.resolver;
 
 /**
-	An MXHX symbol representing a Haxe class.
+	An MXHX symbol representing a Haxe interface.
 **/
-interface IMXHXClassSymbol extends IMXHXTypeSymbol {
+interface IMXHXInterfaceSymbol extends IMXHXTypeSymbol {
 	/**
-		The super class that this class extends, or null.
-	**/
-	public var superClass:IMXHXClassSymbol;
-
-	/**
-		The interfaces implemented by this class.
+		The interfaces that this interface extends.
 	**/
 	public var interfaces:Array<IMXHXInterfaceSymbol>;
 
 	/**
-		A collection of fields declared on the class.
+		A collection of fields declared on the interface.
 	**/
 	public var fields:Array<IMXHXFieldSymbol>;
-
-	/**
-		A collection of events dispatched by the class.
-	**/
-	public var events:Array<IMXHXEventSymbol>;
-
-	/**
-		The default property of the class that doesn't need an explicit child
-		tag in MXHX.
-	**/
-	public var defaultProperty:String;
 }

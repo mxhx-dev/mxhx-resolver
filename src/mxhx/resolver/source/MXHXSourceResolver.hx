@@ -32,6 +32,7 @@ import mxhx.internal.resolver.MXHXEnumFieldSymbol;
 import mxhx.internal.resolver.MXHXEnumSymbol;
 import mxhx.internal.resolver.MXHXEventSymbol;
 import mxhx.internal.resolver.MXHXFieldSymbol;
+import mxhx.internal.resolver.MXHXInterfaceSymbol;
 import mxhx.resolver.IMXHXAbstractSymbol;
 import mxhx.resolver.IMXHXArgumentSymbol;
 import mxhx.resolver.IMXHXClassSymbol;
@@ -39,6 +40,7 @@ import mxhx.resolver.IMXHXEnumFieldSymbol;
 import mxhx.resolver.IMXHXEnumSymbol;
 import mxhx.resolver.IMXHXEventSymbol;
 import mxhx.resolver.IMXHXFieldSymbol;
+import mxhx.resolver.IMXHXInterfaceSymbol;
 import mxhx.resolver.IMXHXResolver;
 import mxhx.resolver.IMXHXSymbol;
 import mxhx.resolver.IMXHXTypeSymbol;
@@ -199,6 +201,9 @@ class MXHXSourceResolver implements IMXHXResolver {
 		var moduleName = resolvedParserType.moduleName;
 		switch (typeDecl.decl) {
 			case EClass(d):
+				if (d.flags.indexOf(HInterface) != -1) {
+					return createMXHXInterfaceSymbolForClassDefinition(d, pack, moduleName, qnameParams);
+				}
 				return createMXHXClassSymbolForClassDefinition(d, pack, moduleName, qnameParams);
 			case EAbstract(d):
 				var isEnum = Lambda.find(d.meta, m -> m.name == META_ENUM);
@@ -550,10 +555,36 @@ class MXHXSourceResolver implements IMXHXResolver {
 		return new MXHXArgumentSymbol(arg.name, resolvedType, arg.opt);
 	}
 
-	private function createMXHXClassSymbolForClassDefinition(classType:Definition<ClassFlag, Array<Field>>, pack:Array<String>, moduleName:String,
+	private function createMXHXInterfaceSymbolForClassDefinition(classDefinition:Definition<ClassFlag, Array<Field>>, pack:Array<String>, moduleName:String,
+			params:Array<IMXHXTypeSymbol>):IMXHXInterfaceSymbol {
+		var qname = definitionAndTypeSymbolParamsToQname(classDefinition, pack, moduleName, params);
+		var result = new MXHXInterfaceSymbol(classDefinition.name, pack);
+		result.qname = qname;
+		result.module = moduleName;
+		// fields may reference this type, so make sure that it's available
+		// before parsing anything else
+		qnameToMXHXTypeSymbolLookup.set(qname, result);
+
+		var imports = resolveImportsForModuleName(moduleName);
+		var resolvedInterfaces:Array<IMXHXInterfaceSymbol> = [];
+		for (flag in classDefinition.flags) {
+			switch (flag) {
+				case HImplements(t):
+					var resolvedInterface = cast(resolveComplexType(TPath(t), pack, moduleName, imports), IMXHXInterfaceSymbol);
+					resolvedInterfaces.push(resolvedInterface);
+				default:
+			}
+		}
+		result.interfaces = resolvedInterfaces;
+		result.params = params != null ? params : [];
+		result.fields = classDefinition.data.map(field -> createMXHXFieldSymbolForField(field, pack, moduleName, imports));
+		return result;
+	}
+
+	private function createMXHXClassSymbolForClassDefinition(classDefinition:Definition<ClassFlag, Array<Field>>, pack:Array<String>, moduleName:String,
 			params:Array<IMXHXTypeSymbol>):IMXHXClassSymbol {
-		var qname = definitionAndTypeSymbolParamsToQname(classType, pack, moduleName, params);
-		var result = new MXHXClassSymbol(classType.name, pack);
+		var qname = definitionAndTypeSymbolParamsToQname(classDefinition, pack, moduleName, params);
+		var result = new MXHXClassSymbol(classDefinition.name, pack);
 		result.qname = qname;
 		result.module = moduleName;
 		// fields may reference this type, so make sure that it's available
@@ -562,17 +593,22 @@ class MXHXSourceResolver implements IMXHXResolver {
 
 		var imports = resolveImportsForModuleName(moduleName);
 		var resolvedSuperClass:IMXHXClassSymbol = null;
-		for (flag in classType.flags) {
+		var resolvedInterfaces:Array<IMXHXInterfaceSymbol> = [];
+		for (flag in classDefinition.flags) {
 			switch (flag) {
 				case HExtends(t):
 					resolvedSuperClass = cast(resolveComplexType(TPath(t), pack, moduleName, imports), IMXHXClassSymbol);
+				case HImplements(t):
+					var resolvedInterface = cast(resolveComplexType(TPath(t), pack, moduleName, imports), IMXHXInterfaceSymbol);
+					resolvedInterfaces.push(resolvedInterface);
 				default:
 			}
 		}
 		result.superClass = resolvedSuperClass;
+		result.interfaces = resolvedInterfaces;
 		result.params = params != null ? params : [];
-		result.fields = classType.data.map(field -> createMXHXFieldSymbolForField(field, pack, moduleName, imports));
-		result.events = classType.meta.map(eventMeta -> {
+		result.fields = classDefinition.data.map(field -> createMXHXFieldSymbolForField(field, pack, moduleName, imports));
+		result.events = classDefinition.meta.map(eventMeta -> {
 			if (eventMeta.name != ":event") {
 				return null;
 			}
@@ -588,14 +624,14 @@ class MXHXSourceResolver implements IMXHXResolver {
 			var result:IMXHXEventSymbol = new MXHXEventSymbol(eventName, resolvedType);
 			return result;
 		}).filter(eventSymbol -> eventSymbol != null);
-		result.defaultProperty = getDefaultProperty(classType);
+		result.defaultProperty = getDefaultProperty(classDefinition);
 		return result;
 	}
 
-	private function createMXHXAbstractSymbolForAbstractDefinition(abstractType:Definition<AbstractFlag, Array<Field>>, pack:Array<String>, moduleName:String,
-			params:Array<IMXHXTypeSymbol>, expectedQname:String):IMXHXAbstractSymbol {
-		var qname = definitionAndTypeSymbolParamsToQname(abstractType, pack, moduleName, params);
-		var result = new MXHXAbstractSymbol(abstractType.name, pack);
+	private function createMXHXAbstractSymbolForAbstractDefinition(abstractDefinition:Definition<AbstractFlag, Array<Field>>, pack:Array<String>,
+			moduleName:String, params:Array<IMXHXTypeSymbol>, expectedQname:String):IMXHXAbstractSymbol {
+		var qname = definitionAndTypeSymbolParamsToQname(abstractDefinition, pack, moduleName, params);
+		var result = new MXHXAbstractSymbol(abstractDefinition.name, pack);
 		result.qname = qname;
 		result.module = moduleName;
 		if (moduleName == MODULE_STD_TYPES) {
@@ -613,10 +649,10 @@ class MXHXSourceResolver implements IMXHXResolver {
 		return result;
 	}
 
-	private function createMXHXEnumSymbolForAbstractEnumDefinition(abstractType:Definition<AbstractFlag, Array<Field>>, pack:Array<String>, moduleName:String,
-			params:Array<IMXHXTypeSymbol>):IMXHXEnumSymbol {
-		var qname = definitionAndTypeSymbolParamsToQname(abstractType, pack, moduleName, params);
-		var result = new MXHXEnumSymbol(abstractType.name, pack);
+	private function createMXHXEnumSymbolForAbstractEnumDefinition(abstractDefinition:Definition<AbstractFlag, Array<Field>>, pack:Array<String>,
+			moduleName:String, params:Array<IMXHXTypeSymbol>):IMXHXEnumSymbol {
+		var qname = definitionAndTypeSymbolParamsToQname(abstractDefinition, pack, moduleName, params);
+		var result = new MXHXEnumSymbol(abstractDefinition.name, pack);
 		result.qname = qname;
 		result.module = moduleName;
 		// fields may reference this type, so make sure that it's available
@@ -624,15 +660,15 @@ class MXHXSourceResolver implements IMXHXResolver {
 		qnameToMXHXTypeSymbolLookup.set(qname, result);
 
 		result.params = params != null ? params : [];
-		result.fields = abstractType.data.filter(field -> field.access.indexOf(AStatic) != -1)
+		result.fields = abstractDefinition.data.filter(field -> field.access.indexOf(AStatic) != -1)
 			.map(field -> createMXHXEnumFieldSymbolForAbstractField(field, result));
 		return result;
 	}
 
-	private function createMXHXEnumSymbolForEnumDefinition(enumType:Definition<EnumFlag, Array<EnumConstructor>>, pack:Array<String>, moduleName:String,
+	private function createMXHXEnumSymbolForEnumDefinition(enumDefinition:Definition<EnumFlag, Array<EnumConstructor>>, pack:Array<String>, moduleName:String,
 			params:Array<IMXHXTypeSymbol>):IMXHXEnumSymbol {
-		var qname = definitionAndTypeSymbolParamsToQname(enumType, pack, moduleName, params);
-		var result = new MXHXEnumSymbol(enumType.name, pack);
+		var qname = definitionAndTypeSymbolParamsToQname(enumDefinition, pack, moduleName, params);
+		var result = new MXHXEnumSymbol(enumDefinition.name, pack);
 		result.qname = qname;
 		result.module = moduleName;
 		// fields may reference this type, so make sure that it's available
@@ -642,7 +678,7 @@ class MXHXSourceResolver implements IMXHXResolver {
 		var imports = resolveImportsForModuleName(moduleName);
 		result.params = params != null ? params : [];
 		var fields:Array<IMXHXEnumFieldSymbol> = [];
-		for (enumConstructor in enumType.data) {
+		for (enumConstructor in enumDefinition.data) {
 			fields.push(createMXHXEnumFieldSymbolForEnumField(enumConstructor, result, pack, moduleName, imports));
 		}
 		result.fields = fields;

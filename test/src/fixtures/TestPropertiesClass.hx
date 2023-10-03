@@ -4,7 +4,7 @@ import haxe.Constraints.Function;
 import fixtures.ModuleWithClassThatHasDifferentName.ThisClassHasADifferentNameThanItsModule;
 
 @:event("change")
-class TestPropertiesClass {
+class TestPropertiesClass implements ITestPropertiesInterface {
 	public function new() {}
 
 	public var any:Any;
@@ -29,6 +29,7 @@ class TestPropertiesClass {
 	public var abstractFrom:TestAbstractFrom;
 	public var abstractFromModuleType:TestAbstractFromModuleType;
 	public var classFromModuleWithDifferentName:ThisClassHasADifferentNameThanItsModule;
+	public var strictInterface:ITestPropertiesInterface;
 
 	// compilation will fail if Context.getType() is used with this one
 	// needs a typedef for a class with @:generic, and not the class alone

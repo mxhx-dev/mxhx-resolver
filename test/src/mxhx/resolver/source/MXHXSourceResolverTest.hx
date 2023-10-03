@@ -6,6 +6,7 @@ import mxhx.parser.MXHXParser;
 import mxhx.IMXHXData;
 import mxhx.resolver.source.MXHXSourceResolver;
 import mxhx.resolver.IMXHXClassSymbol;
+import mxhx.resolver.IMXHXInterfaceSymbol;
 import mxhx.resolver.IMXHXTypeSymbol;
 import utest.Test;
 import utest.Assert;
@@ -169,7 +170,15 @@ class MXHXSourceResolverTest extends Test {
 	public function testResolveQnameFromLocalClass():Void {
 		var resolved = resolver.resolveQname("fixtures.TestPropertiesClass");
 		Assert.notNull(resolved);
+		Assert.isOfType(resolved, IMXHXClassSymbol);
 		Assert.equals("fixtures.TestPropertiesClass", resolved.qname);
+	}
+
+	public function testResolveQnameFromLocalInterface():Void {
+		var resolved = resolver.resolveQname("fixtures.ITestPropertiesInterface");
+		Assert.notNull(resolved);
+		Assert.isOfType(resolved, IMXHXInterfaceSymbol);
+		Assert.equals("fixtures.ITestPropertiesInterface", resolved.qname);
 	}
 
 	public function testResolveAnyField():Void {
@@ -314,6 +323,15 @@ class MXHXSourceResolverTest extends Test {
 		Assert.notNull(resolvedField);
 		Assert.notNull(resolvedField.type);
 		Assert.equals("fixtures.TestPropertiesClass", resolvedField.type.qname);
+	}
+
+	public function testResolveStrictlyTypedInterfaceField():Void {
+		var resolvedClass:IMXHXInterfaceSymbol = cast resolver.resolveQname("fixtures.TestPropertiesClass");
+		Assert.notNull(resolvedClass);
+		var resolvedField = Lambda.find(resolvedClass.fields, field -> field.name == "strictInterface");
+		Assert.notNull(resolvedField);
+		Assert.notNull(resolvedField.type);
+		Assert.equals("fixtures.ITestPropertiesInterface", resolvedField.type.qname);
 	}
 
 	public function testResolveAbstractEnumValueField():Void {
@@ -578,7 +596,7 @@ class MXHXSourceResolverTest extends Test {
 					<mx:Float/>
 				</tests:any>
 			</tests:TestPropertiesClass>
-		', 129);
+		', 132);
 		Assert.notNull(offsetTag);
 
 		var resolved = resolver.resolveTag(offsetTag);
@@ -596,7 +614,7 @@ class MXHXSourceResolverTest extends Test {
 					<mx:Array/>
 				</tests:array>
 			</tests:TestPropertiesClass>
-		', 129);
+		', 132);
 		Assert.notNull(offsetTag);
 
 		var resolved = resolver.resolveTag(offsetTag);
@@ -614,7 +632,7 @@ class MXHXSourceResolverTest extends Test {
 					<mx:Bool/>
 				</tests:boolean>
 			</tests:TestPropertiesClass>
-		', 129);
+		', 132);
 		Assert.notNull(offsetTag);
 
 		var resolved = resolver.resolveTag(offsetTag);
@@ -632,7 +650,7 @@ class MXHXSourceResolverTest extends Test {
 					<mx:Class>Float</mx:Class>
 				</tests:type>
 			</tests:TestPropertiesClass>
-		', 129);
+		', 132);
 		Assert.notNull(offsetTag);
 
 		var resolved = resolver.resolveTag(offsetTag);
@@ -650,7 +668,7 @@ class MXHXSourceResolverTest extends Test {
 					<mx:Date/>
 				</tests:date>
 			</tests:TestPropertiesClass>
-		', 129);
+		', 132);
 		Assert.notNull(offsetTag);
 
 		var resolved = resolver.resolveTag(offsetTag);
@@ -668,7 +686,7 @@ class MXHXSourceResolverTest extends Test {
 					<mx:Struct/>
 				</tests:struct>
 			</tests:TestPropertiesClass>
-		', 129);
+		', 132);
 		Assert.notNull(offsetTag);
 
 		var resolved = resolver.resolveTag(offsetTag);
@@ -686,7 +704,7 @@ class MXHXSourceResolverTest extends Test {
 					<mx:EReg/>
 				</tests:ereg>
 			</tests:TestPropertiesClass>
-		', 129);
+		', 132);
 		Assert.notNull(offsetTag);
 
 		var resolved = resolver.resolveTag(offsetTag);
@@ -704,7 +722,7 @@ class MXHXSourceResolverTest extends Test {
 					<mx:Float/>
 				</tests:float>
 			</tests:TestPropertiesClass>
-		', 129);
+		', 132);
 		Assert.notNull(offsetTag);
 
 		var resolved = resolver.resolveTag(offsetTag);
@@ -722,7 +740,7 @@ class MXHXSourceResolverTest extends Test {
 					<mx:Function/>
 				</tests:func>
 			</tests:TestPropertiesClass>
-		', 129);
+		', 132);
 		Assert.notNull(offsetTag);
 
 		var resolved = resolver.resolveTag(offsetTag);
@@ -740,7 +758,7 @@ class MXHXSourceResolverTest extends Test {
 					<mx:Function/>
 				</tests:funcTyped>
 			</tests:TestPropertiesClass>
-		', 129);
+		', 132);
 		Assert.notNull(offsetTag);
 
 		var resolved = resolver.resolveTag(offsetTag);
@@ -758,7 +776,7 @@ class MXHXSourceResolverTest extends Test {
 					<mx:Int/>
 				</tests:integer>
 			</tests:TestPropertiesClass>
-		', 129);
+		', 132);
 		Assert.notNull(offsetTag);
 
 		var resolved = resolver.resolveTag(offsetTag);
@@ -776,7 +794,7 @@ class MXHXSourceResolverTest extends Test {
 					<mx:String/>
 				</tests:string>
 			</tests:TestPropertiesClass>
-		', 129);
+		', 132);
 		Assert.notNull(offsetTag);
 
 		var resolved = resolver.resolveTag(offsetTag);
@@ -794,7 +812,7 @@ class MXHXSourceResolverTest extends Test {
 					<mx:Struct/>
 				</tests:struct>
 			</tests:TestPropertiesClass>
-		', 129);
+		', 132);
 		Assert.notNull(offsetTag);
 
 		var resolved = resolver.resolveTag(offsetTag);
@@ -812,7 +830,7 @@ class MXHXSourceResolverTest extends Test {
 					<mx:UInt/>
 				</tests:unsignedInteger>
 			</tests:TestPropertiesClass>
-		', 129);
+		', 132);
 		Assert.notNull(offsetTag);
 
 		var resolved = resolver.resolveTag(offsetTag);
@@ -830,7 +848,7 @@ class MXHXSourceResolverTest extends Test {
 					<mx:Xml/>
 				</tests:xml>
 			</tests:TestPropertiesClass>
-		', 129);
+		', 132);
 		Assert.notNull(offsetTag);
 
 		var resolved = resolver.resolveTag(offsetTag);
@@ -848,7 +866,7 @@ class MXHXSourceResolverTest extends Test {
 					<tests:TestPropertyAbstractEnum/>
 				</tests:abstractEnumValue>
 			</tests:TestPropertiesClass>
-		', 129);
+		', 132);
 		Assert.notNull(offsetTag);
 
 		var resolved = resolver.resolveTag(offsetTag);
@@ -866,7 +884,7 @@ class MXHXSourceResolverTest extends Test {
 					<tests:TestPropertyEnum/>
 				</tests:enumValue>
 			</tests:TestPropertiesClass>
-		', 129);
+		', 132);
 		Assert.notNull(offsetTag);
 
 		var resolved = resolver.resolveTag(offsetTag);
@@ -884,7 +902,7 @@ class MXHXSourceResolverTest extends Test {
 					<tests:Float/>
 				</tests:canBeNull>
 			</tests:TestPropertiesClass>
-		', 129);
+		', 132);
 		Assert.notNull(offsetTag);
 
 		var resolved = resolver.resolveTag(offsetTag);
@@ -902,7 +920,7 @@ class MXHXSourceResolverTest extends Test {
 					<tests:TestPropertiesClass/>
 				</tests:strictlyTyped>
 			</tests:TestPropertiesClass>
-		', 129);
+		', 132);
 		Assert.notNull(offsetTag);
 
 		var resolved = resolver.resolveTag(offsetTag);
@@ -910,7 +928,27 @@ class MXHXSourceResolverTest extends Test {
 		Assert.isOfType(resolved, IMXHXFieldSymbol);
 		var fieldSymbol:IMXHXFieldSymbol = cast resolved;
 		Assert.notNull(fieldSymbol.type);
+		Assert.isOfType(fieldSymbol.type, IMXHXClassSymbol);
 		Assert.equals("fixtures.TestPropertiesClass", fieldSymbol.type.qname);
+	}
+
+	public function testResolveFieldTypeStrictInterface():Void {
+		var offsetTag = getOffsetTag('
+			<tests:TestPropertiesClass xmlns:mx="https://ns.mxhx.dev/2024/basic" xmlns:tests="https://ns.mxhx.dev/2024/tests">
+				<tests:strictInterface>
+					<tests:TestPropertiesClass/>
+				</tests:strictInterface>
+			</tests:TestPropertiesClass>
+		', 132);
+		Assert.notNull(offsetTag);
+
+		var resolved = resolver.resolveTag(offsetTag);
+		Assert.notNull(resolved);
+		Assert.isOfType(resolved, IMXHXFieldSymbol);
+		var fieldSymbol:IMXHXFieldSymbol = cast resolved;
+		Assert.notNull(fieldSymbol.type);
+		Assert.isOfType(fieldSymbol.type, IMXHXInterfaceSymbol);
+		Assert.equals("fixtures.ITestPropertiesInterface", fieldSymbol.type.qname);
 	}
 
 	// ---- resolve field value type
@@ -1237,8 +1275,25 @@ class MXHXSourceResolverTest extends Test {
 
 		var resolved = resolver.resolveTag(offsetTag);
 		Assert.notNull(resolved);
-		Assert.isOfType(resolved, IMXHXTypeSymbol);
-		var typeSymbol:IMXHXTypeSymbol = cast resolved;
+		Assert.isOfType(resolved, IMXHXClassSymbol);
+		var typeSymbol:IMXHXClassSymbol = cast resolved;
+		Assert.equals("fixtures.TestPropertiesClass", typeSymbol.qname);
+	}
+
+	public function testResolveFieldValueTypeStrictInterface():Void {
+		var offsetTag = getOffsetTag('
+			<tests:TestPropertiesClass xmlns:mx="https://ns.mxhx.dev/2024/basic" xmlns:tests="https://ns.mxhx.dev/2024/tests">
+				<tests:strictInterface>
+					<tests:TestPropertiesClass/>
+				</tests:strictInterface>
+			</tests:TestPropertiesClass>
+		', 161);
+		Assert.notNull(offsetTag);
+
+		var resolved = resolver.resolveTag(offsetTag);
+		Assert.notNull(resolved);
+		Assert.isOfType(resolved, IMXHXClassSymbol);
+		var typeSymbol:IMXHXClassSymbol = cast resolved;
 		Assert.equals("fixtures.TestPropertiesClass", typeSymbol.qname);
 	}
 }
