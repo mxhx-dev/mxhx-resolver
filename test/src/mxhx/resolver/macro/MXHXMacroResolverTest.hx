@@ -883,21 +883,6 @@ class MXHXMacroResolverTest extends Test {
 		var parser = new MXHXParser(mxhxSource, "source.mxhx");
 		var mxhxData = parser.parse();
 		var resolver = new MXHXMacroResolver();
-		resolver.registerManifest("https://ns.mxhx.dev/2024/basic", [
-			"Array" => "Array",
-			"Bool" => "Bool",
-			"Class" => "Class",
-			"Date" => "Date",
-			"EReg" => "EReg",
-			"Float" => "Float",
-			"Function" => "haxe.Constraints.Function",
-			"Int" => "Int",
-			"Object" => "Any",
-			"String" => "String",
-			"Struct" => "Dynamic",
-			"UInt" => "UInt",
-			"Xml" => "Xml",
-		]);
 
 		var manifestPath = haxe.io.Path.join([Sys.getCwd(), "mxhx-manifest.xml"]);
 		var content = sys.io.File.getContent(manifestPath);

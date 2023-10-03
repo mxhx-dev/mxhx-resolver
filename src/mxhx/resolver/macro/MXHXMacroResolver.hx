@@ -39,6 +39,7 @@ import mxhx.resolver.IMXHXResolver;
 import mxhx.resolver.IMXHXSymbol;
 import mxhx.resolver.IMXHXTypeSymbol;
 import mxhx.resolver.MXHXSymbolTools;
+import mxhx.resolver.MXHXResolvers;
 
 /**
 	An MXHX resolver that uses the [Haxe Macro Context](https://haxe.org/manual/macro-context.html)
@@ -51,7 +52,9 @@ class MXHXMacroResolver implements IMXHXResolver {
 	private static final META_DEFAULT_XML_PROPERTY = "defaultXmlProperty";
 	private static final META_ENUM = ":enum";
 
-	public function new() {}
+	public function new() {
+		manifests = MXHXResolvers.getMappings();
+	}
 
 	private var manifests:Map<String, Map<String, String>> = [];
 	private var qnameLookup:Map<String, IMXHXTypeSymbol> = [];

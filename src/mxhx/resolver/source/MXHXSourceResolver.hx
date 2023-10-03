@@ -45,6 +45,7 @@ import mxhx.resolver.IMXHXResolver;
 import mxhx.resolver.IMXHXSymbol;
 import mxhx.resolver.IMXHXTypeSymbol;
 import mxhx.resolver.MXHXSymbolTools;
+import mxhx.resolver.MXHXResolvers;
 
 /**
 	An MXHX symbol resolver that uses _.hx_ source files parsed by
@@ -58,6 +59,8 @@ class MXHXSourceResolver implements IMXHXResolver {
 	private static final META_ENUM = ":enum";
 
 	public function new(parserData:Array<{pack:Array<String>, decls:Array<haxeparser.Data.TypeDecl>}>) {
+		manifests = MXHXResolvers.emitMappings();
+
 		this.parserData = parserData;
 
 		// cache parser data so that lookups are FAST!

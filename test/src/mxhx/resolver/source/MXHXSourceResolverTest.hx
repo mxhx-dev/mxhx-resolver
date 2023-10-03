@@ -68,22 +68,6 @@ class MXHXSourceResolverTest extends Test {
 		}
 		resolver = new MXHXSourceResolver(parsed);
 
-		resolver.registerManifest("https://ns.mxhx.dev/2024/basic", [
-			"Array" => "Array",
-			"Bool" => "Bool",
-			"Class" => "Class",
-			"Date" => "Date",
-			"EReg" => "EReg",
-			"Float" => "Float",
-			"Function" => "haxe.Constraints.Function",
-			"Int" => "Int",
-			"Object" => "Any",
-			"String" => "String",
-			"Struct" => "Dynamic",
-			"UInt" => "UInt",
-			"Xml" => "Xml",
-		]);
-
 		var manifestPath = haxe.io.Path.join([Sys.getCwd(), "mxhx-manifest.xml"]);
 		var content = sys.io.File.getContent(manifestPath);
 		var xml = Xml.parse(content);
