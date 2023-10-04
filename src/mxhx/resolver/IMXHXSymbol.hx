@@ -22,4 +22,20 @@ interface IMXHXSymbol {
 		The base name of the symbol, without the package (if applicable).
 	**/
 	public var name:String;
+
+	/**
+		The documentation associated with the symbol. Resolvers are not required
+		to populate this field, so it may be null.
+	**/
+	public var doc:Null<String>;
+
+	/**
+		The path to the file containing the symbol.
+	**/
+	public var file:String;
+
+	/**
+		The position within the file containing the symbol.
+	**/
+	public var offsets:{start:Int, end:Int};
 }

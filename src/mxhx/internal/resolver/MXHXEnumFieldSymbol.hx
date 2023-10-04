@@ -6,6 +6,9 @@ import mxhx.resolver.IMXHXEnumFieldSymbol;
 
 class MXHXEnumFieldSymbol implements IMXHXEnumFieldSymbol {
 	public var name:String;
+	public var doc:Null<String>;
+	public var file:String;
+	public var offsets:{start:Int, end:Int};
 	public var parent:IMXHXEnumSymbol;
 	public var args:Array<IMXHXArgumentSymbol>;
 

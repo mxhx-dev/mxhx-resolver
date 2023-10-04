@@ -4,6 +4,9 @@ import mxhx.resolver.IMXHXTypeSymbol;
 
 class MXHXTypeSymbol implements IMXHXTypeSymbol {
 	public var name:String;
+	public var doc:Null<String>;
+	public var file:String;
+	public var offsets:{start:Int, end:Int};
 	public var pack:Array<String>;
 	public var qname:String;
 	public var module:String;

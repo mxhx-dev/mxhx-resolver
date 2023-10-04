@@ -331,7 +331,11 @@ class MXHXMacroResolver implements IMXHXResolver {
 			case FMethod(k): true;
 			default: null;
 		}
-		return new MXHXFieldSymbol(classField.name, resolvedType, isMethod);
+		var result = new MXHXFieldSymbol(classField.name, resolvedType, isMethod);
+		final posInfos = Context.getPosInfos(classField.pos);
+		result.file = posInfos.file;
+		result.offsets = {start: posInfos.min, end: posInfos.max};
+		return result;
 	}
 
 	private function createMXHXEnumFieldSymbolForEnumField(enumField:EnumField, parent:IMXHXEnumSymbol):IMXHXEnumFieldSymbol {
@@ -341,11 +345,19 @@ class MXHXMacroResolver implements IMXHXResolver {
 				args = funArgs.map(arg -> createMXHXArgumentSymbolForFunctionArg(arg));
 			default:
 		}
-		return new MXHXEnumFieldSymbol(enumField.name, parent, args);
+		var result = new MXHXEnumFieldSymbol(enumField.name, parent, args);
+		final posInfos = Context.getPosInfos(enumField.pos);
+		result.file = posInfos.file;
+		result.offsets = {start: posInfos.min, end: posInfos.max};
+		return result;
 	}
 
 	private function createMXHXEnumFieldSymbolForAbstractField(abstractField:ClassField, parent:IMXHXEnumSymbol):IMXHXEnumFieldSymbol {
-		return new MXHXEnumFieldSymbol(abstractField.name, parent, null);
+		var result = new MXHXEnumFieldSymbol(abstractField.name, parent, null);
+		final posInfos = Context.getPosInfos(abstractField.pos);
+		result.file = posInfos.file;
+		result.offsets = {start: posInfos.min, end: posInfos.max};
+		return result;
 	}
 
 	private function createMXHXArgumentSymbolForFunctionArg(functionArg:{name:String, opt:Bool, t:Type}):IMXHXArgumentSymbol {
@@ -359,6 +371,9 @@ class MXHXMacroResolver implements IMXHXResolver {
 		var result = new MXHXInterfaceSymbol(classType.name, classType.pack.copy());
 		result.qname = qname;
 		result.module = classType.module;
+		final posInfos = Context.getPosInfos(classType.pos);
+		result.file = posInfos.file;
+		result.offsets = {start: posInfos.min, end: posInfos.max};
 		// fields may reference this type, so make sure that it's available
 		// before parsing anything else
 		qnameLookup.set(qname, result);
@@ -379,6 +394,9 @@ class MXHXMacroResolver implements IMXHXResolver {
 		var result = new MXHXClassSymbol(classType.name, classType.pack.copy());
 		result.qname = qname;
 		result.module = classType.module;
+		final posInfos = Context.getPosInfos(classType.pos);
+		result.file = posInfos.file;
+		result.offsets = {start: posInfos.min, end: posInfos.max};
 		// fields may reference this type, so make sure that it's available
 		// before parsing anything else
 		qnameLookup.set(qname, result);
@@ -420,6 +438,9 @@ class MXHXMacroResolver implements IMXHXResolver {
 		var result = new MXHXAbstractSymbol(abstractType.name, abstractType.pack.copy());
 		result.qname = qname;
 		result.module = abstractType.module;
+		final posInfos = Context.getPosInfos(abstractType.pos);
+		result.file = posInfos.file;
+		result.offsets = {start: posInfos.min, end: posInfos.max};
 		// fields may reference this type, so make sure that it's available
 		// before parsing anything else
 		qnameLookup.set(qname, result);
@@ -437,6 +458,9 @@ class MXHXMacroResolver implements IMXHXResolver {
 		var result = new MXHXEnumSymbol(abstractType.name, abstractType.pack.copy());
 		result.qname = qname;
 		result.module = abstractType.module;
+		final posInfos = Context.getPosInfos(abstractType.pos);
+		result.file = posInfos.file;
+		result.offsets = {start: posInfos.min, end: posInfos.max};
 		// fields may reference this type, so make sure that it's available
 		// before parsing anything else
 		qnameLookup.set(qname, result);
@@ -451,6 +475,9 @@ class MXHXMacroResolver implements IMXHXResolver {
 		var result = new MXHXEnumSymbol(enumType.name, enumType.pack.copy());
 		result.qname = qname;
 		result.module = enumType.module;
+		final posInfos = Context.getPosInfos(enumType.pos);
+		result.file = posInfos.file;
+		result.offsets = {start: posInfos.min, end: posInfos.max};
 		// fields may reference this type, so make sure that it's available
 		// before parsing anything else
 		qnameLookup.set(qname, result);

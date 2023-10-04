@@ -18,6 +18,7 @@ package mxhx.resolver.source;
 import haxe.macro.Expr.ComplexType;
 import haxe.macro.Expr.Field;
 import haxe.macro.Expr.MetadataEntry;
+import haxe.macro.Expr.Position;
 import haxe.macro.Expr.TypeParamDecl;
 import haxeparser.Data.AbstractFlag;
 import haxeparser.Data.ClassFlag;
@@ -205,18 +206,18 @@ class MXHXSourceResolver implements IMXHXResolver {
 		switch (typeDecl.decl) {
 			case EClass(d):
 				if (d.flags.indexOf(HInterface) != -1) {
-					return createMXHXInterfaceSymbolForClassDefinition(d, pack, moduleName, qnameParams);
+					return createMXHXInterfaceSymbolForClassDefinition(d, typeDecl.pos, pack, moduleName, qnameParams);
 				}
-				return createMXHXClassSymbolForClassDefinition(d, pack, moduleName, qnameParams);
+				return createMXHXClassSymbolForClassDefinition(d, typeDecl.pos, pack, moduleName, qnameParams);
 			case EAbstract(d):
 				var isEnum = Lambda.find(d.meta, m -> m.name == META_ENUM);
 				if (isEnum != null) {
-					return createMXHXEnumSymbolForAbstractEnumDefinition(d, pack, moduleName, qnameParams);
+					return createMXHXEnumSymbolForAbstractEnumDefinition(d, typeDecl.pos, pack, moduleName, qnameParams);
 				} else {
-					return createMXHXAbstractSymbolForAbstractDefinition(d, pack, moduleName, qnameParams, qname);
+					return createMXHXAbstractSymbolForAbstractDefinition(d, typeDecl.pos, pack, moduleName, qnameParams, qname);
 				}
 			case EEnum(d):
-				return createMXHXEnumSymbolForEnumDefinition(d, pack, moduleName, qnameParams);
+				return createMXHXEnumSymbolForEnumDefinition(d, typeDecl.pos, pack, moduleName, qnameParams);
 			case ETypedef(d):
 				var imports = resolveImportsForModuleName(moduleName);
 				var result = resolveComplexType(d.data, pack, moduleName, imports);
@@ -539,17 +540,25 @@ class MXHXSourceResolver implements IMXHXResolver {
 			case FFun(f): true;
 			default: null;
 		}
-		return new MXHXFieldSymbol(field.name, resolvedType, isMethod);
+		var result = new MXHXFieldSymbol(field.name, resolvedType, isMethod);
+		result.doc = field.doc;
+		result.file = field.pos.file;
+		result.offsets = {start: field.pos.min, end: field.pos.max};
+		return result;
 	}
 
 	private function createMXHXEnumFieldSymbolForEnumField(enumConstructor:EnumConstructor, parent:IMXHXEnumSymbol, pack:Array<String>, moduleName:String,
 			imports:Array<TypeDecl>):IMXHXEnumFieldSymbol {
 		var args = enumConstructor.args.map(arg -> createMXHXArgumentSymbolForFunctionArg(arg, pack, moduleName, imports));
-		return new MXHXEnumFieldSymbol(enumConstructor.name, parent, args);
+		var result = new MXHXEnumFieldSymbol(enumConstructor.name, parent, args);
+		result.doc = enumConstructor.doc;
+		return result;
 	}
 
 	private function createMXHXEnumFieldSymbolForAbstractField(abstractField:Field, parent:IMXHXEnumSymbol):IMXHXEnumFieldSymbol {
-		return new MXHXEnumFieldSymbol(abstractField.name, parent, null);
+		var result = new MXHXEnumFieldSymbol(abstractField.name, parent, null);
+		result.doc = abstractField.doc;
+		return result;
 	}
 
 	private function createMXHXArgumentSymbolForFunctionArg(arg:{name:String, opt:Bool, type:ComplexType}, pack:Array<String>, moduleName:String,
@@ -558,12 +567,15 @@ class MXHXSourceResolver implements IMXHXResolver {
 		return new MXHXArgumentSymbol(arg.name, resolvedType, arg.opt);
 	}
 
-	private function createMXHXInterfaceSymbolForClassDefinition(classDefinition:Definition<ClassFlag, Array<Field>>, pack:Array<String>, moduleName:String,
-			params:Array<IMXHXTypeSymbol>):IMXHXInterfaceSymbol {
+	private function createMXHXInterfaceSymbolForClassDefinition(classDefinition:Definition<ClassFlag, Array<Field>>, pos:Position, pack:Array<String>,
+			moduleName:String, params:Array<IMXHXTypeSymbol>):IMXHXInterfaceSymbol {
 		var qname = definitionAndTypeSymbolParamsToQname(classDefinition, pack, moduleName, params);
 		var result = new MXHXInterfaceSymbol(classDefinition.name, pack);
 		result.qname = qname;
 		result.module = moduleName;
+		result.doc = classDefinition.doc;
+		result.file = pos.file;
+		result.offsets = {start: pos.min, end: pos.max};
 		// fields may reference this type, so make sure that it's available
 		// before parsing anything else
 		qnameToMXHXTypeSymbolLookup.set(qname, result);
@@ -584,12 +596,15 @@ class MXHXSourceResolver implements IMXHXResolver {
 		return result;
 	}
 
-	private function createMXHXClassSymbolForClassDefinition(classDefinition:Definition<ClassFlag, Array<Field>>, pack:Array<String>, moduleName:String,
-			params:Array<IMXHXTypeSymbol>):IMXHXClassSymbol {
+	private function createMXHXClassSymbolForClassDefinition(classDefinition:Definition<ClassFlag, Array<Field>>, pos:Position, pack:Array<String>,
+			moduleName:String, params:Array<IMXHXTypeSymbol>):IMXHXClassSymbol {
 		var qname = definitionAndTypeSymbolParamsToQname(classDefinition, pack, moduleName, params);
 		var result = new MXHXClassSymbol(classDefinition.name, pack);
 		result.qname = qname;
 		result.module = moduleName;
+		result.doc = classDefinition.doc;
+		result.file = pos.file;
+		result.offsets = {start: pos.min, end: pos.max};
 		// fields may reference this type, so make sure that it's available
 		// before parsing anything else
 		qnameToMXHXTypeSymbolLookup.set(qname, result);
@@ -631,12 +646,15 @@ class MXHXSourceResolver implements IMXHXResolver {
 		return result;
 	}
 
-	private function createMXHXAbstractSymbolForAbstractDefinition(abstractDefinition:Definition<AbstractFlag, Array<Field>>, pack:Array<String>,
-			moduleName:String, params:Array<IMXHXTypeSymbol>, expectedQname:String):IMXHXAbstractSymbol {
+	private function createMXHXAbstractSymbolForAbstractDefinition(abstractDefinition:Definition<AbstractFlag, Array<Field>>, pos:Position,
+			pack:Array<String>, moduleName:String, params:Array<IMXHXTypeSymbol>, expectedQname:String):IMXHXAbstractSymbol {
 		var qname = definitionAndTypeSymbolParamsToQname(abstractDefinition, pack, moduleName, params);
 		var result = new MXHXAbstractSymbol(abstractDefinition.name, pack);
 		result.qname = qname;
 		result.module = moduleName;
+		result.doc = abstractDefinition.doc;
+		result.file = pos.file;
+		result.offsets = {start: pos.min, end: pos.max};
 		if (moduleName == MODULE_STD_TYPES) {
 			qnameToMXHXTypeSymbolLookup.set(MODULE_STD_TYPES + "." + qname, result);
 		}
@@ -652,12 +670,15 @@ class MXHXSourceResolver implements IMXHXResolver {
 		return result;
 	}
 
-	private function createMXHXEnumSymbolForAbstractEnumDefinition(abstractDefinition:Definition<AbstractFlag, Array<Field>>, pack:Array<String>,
-			moduleName:String, params:Array<IMXHXTypeSymbol>):IMXHXEnumSymbol {
+	private function createMXHXEnumSymbolForAbstractEnumDefinition(abstractDefinition:Definition<AbstractFlag, Array<Field>>, pos:Position,
+			pack:Array<String>, moduleName:String, params:Array<IMXHXTypeSymbol>):IMXHXEnumSymbol {
 		var qname = definitionAndTypeSymbolParamsToQname(abstractDefinition, pack, moduleName, params);
 		var result = new MXHXEnumSymbol(abstractDefinition.name, pack);
 		result.qname = qname;
 		result.module = moduleName;
+		result.doc = abstractDefinition.doc;
+		result.file = pos.file;
+		result.offsets = {start: pos.min, end: pos.max};
 		// fields may reference this type, so make sure that it's available
 		// before parsing anything else
 		qnameToMXHXTypeSymbolLookup.set(qname, result);
@@ -668,12 +689,15 @@ class MXHXSourceResolver implements IMXHXResolver {
 		return result;
 	}
 
-	private function createMXHXEnumSymbolForEnumDefinition(enumDefinition:Definition<EnumFlag, Array<EnumConstructor>>, pack:Array<String>, moduleName:String,
-			params:Array<IMXHXTypeSymbol>):IMXHXEnumSymbol {
+	private function createMXHXEnumSymbolForEnumDefinition(enumDefinition:Definition<EnumFlag, Array<EnumConstructor>>, pos:Position, pack:Array<String>,
+			moduleName:String, params:Array<IMXHXTypeSymbol>):IMXHXEnumSymbol {
 		var qname = definitionAndTypeSymbolParamsToQname(enumDefinition, pack, moduleName, params);
 		var result = new MXHXEnumSymbol(enumDefinition.name, pack);
 		result.qname = qname;
 		result.module = moduleName;
+		result.doc = enumDefinition.doc;
+		result.file = pos.file;
+		result.offsets = {start: pos.min, end: pos.max};
 		// fields may reference this type, so make sure that it's available
 		// before parsing anything else
 		qnameToMXHXTypeSymbolLookup.set(qname, result);
