@@ -586,7 +586,7 @@ class MXHXSourceResolver implements IMXHXResolver {
 			switch (flag) {
 				case HImplements(t):
 					var resolvedImplements = resolveComplexType(TPath(t), pack, moduleName, imports);
-					if (resolvedImplements is IMXHXInterfaceSymbol) {
+					if ((resolvedImplements is IMXHXInterfaceSymbol)) {
 						var resolvedInterface:IMXHXInterfaceSymbol = cast resolvedImplements;
 						resolvedInterfaces.push(resolvedInterface);
 					}
@@ -619,12 +619,12 @@ class MXHXSourceResolver implements IMXHXResolver {
 			switch (flag) {
 				case HExtends(t):
 					var resolvedExtends = resolveComplexType(TPath(t), pack, moduleName, imports);
-					if (resolvedExtends is IMXHXClassSymbol) {
+					if ((resolvedExtends is IMXHXClassSymbol)) {
 						resolvedSuperClass = cast resolvedExtends;
 					}
 				case HImplements(t):
 					var resolvedImplements = resolveComplexType(TPath(t), pack, moduleName, imports);
-					if (resolvedImplements is IMXHXInterfaceSymbol) {
+					if ((resolvedImplements is IMXHXInterfaceSymbol)) {
 						var resolvedInterface:IMXHXInterfaceSymbol = cast resolvedImplements;
 						resolvedInterfaces.push(resolvedInterface);
 					}
