@@ -285,7 +285,8 @@ class MXHXMacroResolver implements IMXHXResolver {
 						if (tagData.stateName != null) {
 							return null;
 						}
-						var qname = macroBaseTypeAndTypeSymbolParamsToQname(arrayClassType, [itemType]);
+
+						var qname = MXHXResolverTools.definitionToQname(arrayClassType.name, arrayClassType.pack, arrayClassType.module, [itemType.qname]);
 						return resolveQname(qname);
 					}
 				}
@@ -367,7 +368,8 @@ class MXHXMacroResolver implements IMXHXResolver {
 	}
 
 	private function createMXHXInterfaceSymbolForClassType(classType:ClassType, params:Array<IMXHXTypeSymbol>):IMXHXInterfaceSymbol {
-		var qname = macroBaseTypeAndTypeSymbolParamsToQname(classType, params);
+		var qname = MXHXResolverTools.definitionToQname(classType.name, classType.pack, classType.module,
+			params != null ? params.map(param -> param != null ? param.qname : null) : null);
 		var result = new MXHXInterfaceSymbol(classType.name, classType.pack.copy());
 		result.qname = qname;
 		result.module = classType.module;
@@ -380,7 +382,8 @@ class MXHXMacroResolver implements IMXHXResolver {
 
 		result.interfaces = classType.interfaces.map(i -> {
 			var interfaceType = i.t.get();
-			var interfaceQName = macroBaseTypeToQname(interfaceType, i.params);
+			var interfaceQName = MXHXResolverTools.definitionToQname(interfaceType.name, interfaceType.pack, interfaceType.module,
+				i.params.map(param -> macroTypeToQname(param)));
 			return cast resolveQname(interfaceQName);
 		});
 		result.params = params != null ? params : [];
@@ -390,7 +393,8 @@ class MXHXMacroResolver implements IMXHXResolver {
 	}
 
 	private function createMXHXClassSymbolForClassType(classType:ClassType, params:Array<IMXHXTypeSymbol>):IMXHXClassSymbol {
-		var qname = macroBaseTypeAndTypeSymbolParamsToQname(classType, params);
+		var qname = MXHXResolverTools.definitionToQname(classType.name, classType.pack, classType.module,
+			params != null ? params.map(param -> param != null ? param.qname : null) : null);
 		var result = new MXHXClassSymbol(classType.name, classType.pack.copy());
 		result.qname = qname;
 		result.module = classType.module;
@@ -404,13 +408,15 @@ class MXHXMacroResolver implements IMXHXResolver {
 		var resolvedSuperClass:IMXHXClassSymbol = null;
 		if (classType.superClass != null) {
 			var superClass = classType.superClass.t.get();
-			var superClassQName = macroBaseTypeToQname(superClass, classType.superClass.params);
+			var superClassQName = MXHXResolverTools.definitionToQname(superClass.name, superClass.pack, superClass.module,
+				classType.superClass.params.map(param -> macroTypeToQname(param)));
 			resolvedSuperClass = cast resolveQname(superClassQName);
 		}
 		result.superClass = resolvedSuperClass;
 		result.interfaces = classType.interfaces.map(i -> {
 			var interfaceType = i.t.get();
-			var interfaceQName = macroBaseTypeToQname(interfaceType, i.params);
+			var interfaceQName = MXHXResolverTools.definitionToQname(interfaceType.name, interfaceType.pack, interfaceType.module,
+				i.params.map(param -> macroTypeToQname(param)));
 			return cast resolveQname(interfaceQName);
 		});
 		result.params = params != null ? params : [];
@@ -433,8 +439,8 @@ class MXHXMacroResolver implements IMXHXResolver {
 	}
 
 	private function createMXHXAbstractSymbolForAbstractType(abstractType:AbstractType, params:Array<IMXHXTypeSymbol>):IMXHXAbstractSymbol {
-		var qname = macroBaseTypeAndTypeSymbolParamsToQname(abstractType, params);
-
+		var qname = MXHXResolverTools.definitionToQname(abstractType.name, abstractType.pack, abstractType.module,
+			params != null ? params.map(param -> param != null ? param.qname : null) : null);
 		var result = new MXHXAbstractSymbol(abstractType.name, abstractType.pack.copy());
 		result.qname = qname;
 		result.module = abstractType.module;
@@ -454,7 +460,8 @@ class MXHXMacroResolver implements IMXHXResolver {
 	}
 
 	private function createMXHXEnumSymbolForAbstractEnumType(abstractType:AbstractType, params:Array<IMXHXTypeSymbol>):IMXHXEnumSymbol {
-		var qname = macroBaseTypeAndTypeSymbolParamsToQname(abstractType, params);
+		var qname = MXHXResolverTools.definitionToQname(abstractType.name, abstractType.pack, abstractType.module,
+			params != null ? params.map(param -> param != null ? param.qname : null) : null);
 		var result = new MXHXEnumSymbol(abstractType.name, abstractType.pack.copy());
 		result.qname = qname;
 		result.module = abstractType.module;
@@ -471,7 +478,8 @@ class MXHXMacroResolver implements IMXHXResolver {
 	}
 
 	private function createMXHXEnumSymbolForEnumType(enumType:EnumType, params:Array<IMXHXTypeSymbol>):IMXHXEnumSymbol {
-		var qname = macroBaseTypeAndTypeSymbolParamsToQname(enumType, params);
+		var qname = MXHXResolverTools.definitionToQname(enumType.name, enumType.pack, enumType.module,
+			params != null ? params.map(param -> param != null ? param.qname : null) : null);
 		var result = new MXHXEnumSymbol(enumType.name, enumType.pack.copy());
 		result.qname = qname;
 		result.module = enumType.module;
@@ -550,7 +558,8 @@ class MXHXMacroResolver implements IMXHXResolver {
 		var typedExprType = Context.typeExpr(eventMeta.params[0]).t;
 		return switch (typedExprType) {
 			case TAbstract(t, params):
-				var qname = macroBaseTypeToQname(t.get());
+				var abstractType = t.get();
+				var qname = MXHXResolverTools.definitionToQname(abstractType.name, abstractType.pack, abstractType.module);
 				if ("openfl.events.EventType" != qname) {
 					return "openfl.events.Event";
 				}
@@ -603,13 +612,14 @@ class MXHXMacroResolver implements IMXHXResolver {
 							return null;
 						default:
 					}
-					return macroBaseTypeToQname(classType, params);
+					return MXHXResolverTools.definitionToQname(classType.name, classType.pack, classType.module, params.map(param -> macroTypeToQname(param)));
 				case TEnum(t, params):
 					var enumType = t.get();
-					return macroBaseTypeToQname(enumType, params);
+					return MXHXResolverTools.definitionToQname(enumType.name, enumType.pack, enumType.module, params.map(param -> macroTypeToQname(param)));
 				case TAbstract(t, params):
 					var abstractType = t.get();
-					return macroBaseTypeToQname(abstractType, params);
+					return MXHXResolverTools.definitionToQname(abstractType.name, abstractType.pack, abstractType.module,
+						params.map(param -> macroTypeToQname(param)));
 				case TDynamic(t):
 					return "Dynamic<%>";
 				case TFun(args, ret):
@@ -630,61 +640,6 @@ class MXHXMacroResolver implements IMXHXResolver {
 			}
 		}
 		return null;
-	}
-
-	/**
-		Extracts the qname from a macro BaseType
-	**/
-	private static function macroBaseTypeToQname(baseType:BaseType, ?params:Array<Type>):String {
-		var qname = baseType.name;
-		if (baseType.pack.length > 0) {
-			qname = baseType.pack.join(".") + "." + qname;
-		}
-		if (qname != baseType.module && baseType.module != MODULE_STD_TYPES) {
-			qname = baseType.module + "." + baseType.name;
-		}
-		if (params != null && params.length > 0) {
-			qname += "<";
-			for (i in 0...params.length) {
-				var param = params[0];
-				if (i > 0) {
-					qname += ",";
-				}
-				var paramQname = macroTypeToQname(param);
-				if (paramQname == null) {
-					paramQname = "%";
-				}
-				qname += paramQname;
-			}
-			qname += ">";
-		}
-		return qname;
-	}
-
-	private static function macroBaseTypeAndTypeSymbolParamsToQname(baseType:BaseType, ?params:Array<IMXHXTypeSymbol>):String {
-		var qname = baseType.name;
-		if (baseType.pack.length > 0) {
-			qname = baseType.pack.join(".") + "." + qname;
-		}
-		if (qname != baseType.module && baseType.module != MODULE_STD_TYPES) {
-			qname = baseType.module + "." + baseType.name;
-		}
-		if (params != null && params.length > 0) {
-			qname += "<";
-			for (i in 0...params.length) {
-				var param = params[0];
-				if (i > 0) {
-					qname += ",";
-				}
-				if (param == null) {
-					qname += "%";
-				} else {
-					qname += param.qname;
-				}
-			}
-			qname += ">";
-		}
-		return qname;
 	}
 
 	private static function resolveMacroTypeForQname(qname:String):Type {

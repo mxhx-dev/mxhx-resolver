@@ -250,19 +250,10 @@ class MXHXSourceResolver implements IMXHXResolver {
 		parserData.push(module);
 	}
 
-	private function fileAndPackToModule(file:String, pack:Array<String>):String {
-		var module = "";
-		var index = file.lastIndexOf("/");
-		for (i in 0...pack.length) {
-			index = file.lastIndexOf("/", index - 1);
-		}
-		return StringTools.replace(file.substring(index + 1, file.length - 3), "/", ".");
-	}
-
 	private function resolveImportsForModuleName(moduleToFind:String):Array<TypeDecl> {
 		for (parserResult in parserData) {
 			for (decl in parserResult.decls) {
-				var module = fileAndPackToModule(decl.pos.file, parserResult.pack);
+				var module = MXHXResolverTools.filePathAndPackToModule(decl.pos.file, parserResult.pack);
 				if (module == moduleToFind) {
 					return parserResult.decls.filter(typeDecl -> {
 						return switch (typeDecl.decl) {
@@ -280,7 +271,7 @@ class MXHXSourceResolver implements IMXHXResolver {
 	}
 
 	private function cacheDecl(decl:TypeDecl, pack:Array<String>):Void {
-		var moduleName = fileAndPackToModule(decl.pos.file, pack);
+		var moduleName = MXHXResolverTools.filePathAndPackToModule(decl.pos.file, pack);
 		var typesInModule = moduleNameToTypesLookup.get(moduleName);
 		if (typesInModule == null) {
 			typesInModule = [];
@@ -288,7 +279,7 @@ class MXHXSourceResolver implements IMXHXResolver {
 		}
 		switch (decl.decl) {
 			case EClass(d):
-				var qname = definitionAndTypeSymbolParamsToQname(d, pack, moduleName);
+				var qname = MXHXResolverTools.definitionToQname(d.name, pack, moduleName);
 				var value = {
 					typeDecl: decl,
 					pack: pack,
@@ -298,7 +289,7 @@ class MXHXSourceResolver implements IMXHXResolver {
 				qnameToParserTypeLookup.set(qname, value);
 				typesInModule.push(value);
 			case EAbstract(d):
-				var qname = definitionAndTypeSymbolParamsToQname(d, pack, moduleName);
+				var qname = MXHXResolverTools.definitionToQname(d.name, pack, moduleName);
 				var value = {
 					typeDecl: decl,
 					pack: pack,
@@ -308,7 +299,7 @@ class MXHXSourceResolver implements IMXHXResolver {
 				qnameToParserTypeLookup.set(qname, value);
 				typesInModule.push(value);
 			case EEnum(d):
-				var qname = definitionAndTypeSymbolParamsToQname(d, pack, moduleName);
+				var qname = MXHXResolverTools.definitionToQname(d.name, pack, moduleName);
 				var value = {
 					typeDecl: decl,
 					pack: pack,
@@ -318,7 +309,7 @@ class MXHXSourceResolver implements IMXHXResolver {
 				qnameToParserTypeLookup.set(qname, value);
 				typesInModule.push(value);
 			case ETypedef(d):
-				var qname = definitionAndTypeSymbolParamsToQname(d, pack, moduleName);
+				var qname = MXHXResolverTools.definitionToQname(d.name, pack, moduleName);
 				var value = {
 					typeDecl: decl,
 					pack: pack,
@@ -416,7 +407,7 @@ class MXHXSourceResolver implements IMXHXResolver {
 						if (tagData.stateName != null) {
 							return null;
 						}
-						var qname = definitionAndTypeSymbolParamsToQname(arrayClassType, [], localName, [itemType]);
+						var qname = MXHXResolverTools.definitionToQname(arrayClassType.name, [], localName, [itemType.qname]);
 						return resolveQname(qname);
 					}
 				}
@@ -482,6 +473,14 @@ class MXHXSourceResolver implements IMXHXResolver {
 											foundImport = true;
 											break;
 										}
+									case IAll:
+										var possibleQname = sl.map(item -> item.pack).join(".") + "." + baseName;
+										var resolved = resolveQname(possibleQname);
+										if (resolved != null) {
+											qname = possibleQname;
+											foundImport = true;
+											break;
+										}
 									default:
 										trace("unrecognized import: " + current.decl);
 								}
@@ -519,6 +518,8 @@ class MXHXSourceResolver implements IMXHXResolver {
 			case TFunction(args, ret):
 				return resolveQname("haxe.Constraints.Function");
 			case TAnonymous(fields):
+				return resolveQname("Dynamic");
+			case TIntersection(tl):
 				return resolveQname("Dynamic");
 			default:
 				trace("unhandled complex type: " + complexType);
@@ -569,7 +570,8 @@ class MXHXSourceResolver implements IMXHXResolver {
 
 	private function createMXHXInterfaceSymbolForClassDefinition(classDefinition:Definition<ClassFlag, Array<Field>>, pos:Position, pack:Array<String>,
 			moduleName:String, params:Array<IMXHXTypeSymbol>):IMXHXInterfaceSymbol {
-		var qname = definitionAndTypeSymbolParamsToQname(classDefinition, pack, moduleName, params);
+		var qname = MXHXResolverTools.definitionToQname(classDefinition.name, pack, moduleName,
+			params != null ? params.map(param -> param != null ? param.qname : null) : null);
 		var result = new MXHXInterfaceSymbol(classDefinition.name, pack);
 		result.qname = qname;
 		result.module = moduleName;
@@ -601,7 +603,8 @@ class MXHXSourceResolver implements IMXHXResolver {
 
 	private function createMXHXClassSymbolForClassDefinition(classDefinition:Definition<ClassFlag, Array<Field>>, pos:Position, pack:Array<String>,
 			moduleName:String, params:Array<IMXHXTypeSymbol>):IMXHXClassSymbol {
-		var qname = definitionAndTypeSymbolParamsToQname(classDefinition, pack, moduleName, params);
+		var qname = MXHXResolverTools.definitionToQname(classDefinition.name, pack, moduleName,
+			params != null ? params.map(param -> param != null ? param.qname : null) : null);
 		var result = new MXHXClassSymbol(classDefinition.name, pack);
 		result.qname = qname;
 		result.module = moduleName;
@@ -657,7 +660,8 @@ class MXHXSourceResolver implements IMXHXResolver {
 
 	private function createMXHXAbstractSymbolForAbstractDefinition(abstractDefinition:Definition<AbstractFlag, Array<Field>>, pos:Position,
 			pack:Array<String>, moduleName:String, params:Array<IMXHXTypeSymbol>, expectedQname:String):IMXHXAbstractSymbol {
-		var qname = definitionAndTypeSymbolParamsToQname(abstractDefinition, pack, moduleName, params);
+		var qname = MXHXResolverTools.definitionToQname(abstractDefinition.name, pack, moduleName,
+			params != null ? params.map(param -> param != null ? param.qname : null) : null);
 		var result = new MXHXAbstractSymbol(abstractDefinition.name, pack);
 		result.qname = qname;
 		result.module = moduleName;
@@ -681,7 +685,8 @@ class MXHXSourceResolver implements IMXHXResolver {
 
 	private function createMXHXEnumSymbolForAbstractEnumDefinition(abstractDefinition:Definition<AbstractFlag, Array<Field>>, pos:Position,
 			pack:Array<String>, moduleName:String, params:Array<IMXHXTypeSymbol>):IMXHXEnumSymbol {
-		var qname = definitionAndTypeSymbolParamsToQname(abstractDefinition, pack, moduleName, params);
+		var qname = MXHXResolverTools.definitionToQname(abstractDefinition.name, pack, moduleName,
+			params != null ? params.map(param -> param != null ? param.qname : null) : null);
 		var result = new MXHXEnumSymbol(abstractDefinition.name, pack);
 		result.qname = qname;
 		result.module = moduleName;
@@ -700,7 +705,8 @@ class MXHXSourceResolver implements IMXHXResolver {
 
 	private function createMXHXEnumSymbolForEnumDefinition(enumDefinition:Definition<EnumFlag, Array<EnumConstructor>>, pos:Position, pack:Array<String>,
 			moduleName:String, params:Array<IMXHXTypeSymbol>):IMXHXEnumSymbol {
-		var qname = definitionAndTypeSymbolParamsToQname(enumDefinition, pack, moduleName, params);
+		var qname = MXHXResolverTools.definitionToQname(enumDefinition.name, pack, moduleName,
+			params != null ? params.map(param -> param != null ? param.qname : null) : null);
 		var result = new MXHXEnumSymbol(enumDefinition.name, pack);
 		result.qname = qname;
 		result.module = moduleName;
@@ -817,33 +823,6 @@ class MXHXSourceResolver implements IMXHXResolver {
 			return null;
 		}
 		return propertyName;
-	}
-
-	private static function definitionAndTypeSymbolParamsToQname(classType:Definition<Dynamic, Dynamic>, pack:Array<String>, moduleName:String,
-			?params:Array<IMXHXTypeSymbol>):String {
-		var qname = classType.name;
-		if (pack.length > 0) {
-			qname = pack.join(".") + "." + qname;
-		}
-		if (qname != moduleName && moduleName != MODULE_STD_TYPES) {
-			qname = moduleName + "." + classType.name;
-		}
-		if (params != null && params.length > 0) {
-			qname += "<";
-			for (i in 0...params.length) {
-				var param = params[0];
-				if (i > 0) {
-					qname += ",";
-				}
-				if (param == null) {
-					qname += "%";
-				} else {
-					qname += param.qname;
-				}
-			}
-			qname += ">";
-		}
-		return qname;
 	}
 
 	private function resolveParserTypeForQname(qnameToFind:String):TypeDeclEx {
