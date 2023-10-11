@@ -200,6 +200,18 @@ class MXHXMacroResolver implements IMXHXResolver {
 		qnameLookup.remove(symbol.qname);
 	}
 
+	public function getTagNamesForQname(qnameToFind:String):Map<String, String> {
+		var result:Map<String, String> = [];
+		for (uri => mappings in manifests) {
+			for (tagName => qname in mappings) {
+				if (qname == qnameToFind) {
+					result.set(uri, tagName);
+				}
+			}
+		}
+		return result;
+	}
+
 	private function qnameToParams(qname:String, paramsIndex:Int):Array<IMXHXTypeSymbol> {
 		var params:Array<IMXHXTypeSymbol> = null;
 		var paramsString = qname.substring(paramsIndex + 1, qname.length - 1);

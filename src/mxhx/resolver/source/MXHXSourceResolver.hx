@@ -73,7 +73,7 @@ class MXHXSourceResolver implements IMXHXResolver {
 	}
 
 	private var parserData:Array<{pack:Array<String>, decls:Array<haxeparser.Data.TypeDecl>}>;
-	private var manifests:Map<String, Map<String, String>> = [];
+	private var manifests:Map<String, Map<String, String>> /* Map<Uri<TagName, Qname>> */ = [];
 	private var qnameToMXHXTypeSymbolLookup:Map<String, IMXHXTypeSymbol> = [];
 	private var qnameToParserTypeLookup:Map<String, TypeDeclEx> = [];
 	private var moduleNameToTypesLookup:Map<String, Array<TypeDeclEx>> = [];
@@ -245,6 +245,18 @@ class MXHXSourceResolver implements IMXHXResolver {
 			}
 		}
 		parserData.push(module);
+	}
+
+	public function getTagNamesForQname(qnameToFind:String):Map<String, String> {
+		var result:Map<String, String> = [];
+		for (uri => mappings in manifests) {
+			for (tagName => qname in mappings) {
+				if (qname == qnameToFind) {
+					result.set(uri, tagName);
+				}
+			}
+		}
+		return result;
 	}
 
 	private function qnameToParams(qname:String, paramsIndex:Int):Array<IMXHXTypeSymbol> {
