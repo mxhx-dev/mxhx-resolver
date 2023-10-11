@@ -161,10 +161,7 @@ class MXHXSourceResolver implements IMXHXResolver {
 		var qnameParams:Array<IMXHXTypeSymbol> = null;
 		var paramsIndex = qname.indexOf("<");
 		if (paramsIndex != -1) {
-			var paramsString = qname.substring(paramsIndex + 1, qname.length - 1);
-			if (paramsString.length > 0) {
-				qnameParams = paramsString.split(",").map(paramTypeName -> resolveQname(paramTypeName));
-			}
+			qnameParams = qnameToParams(qname, paramsIndex);
 		} else {
 			var discoveredParams:Array<TypeParamDecl> = null;
 			if (resolvedParserType != null) {
@@ -248,6 +245,48 @@ class MXHXSourceResolver implements IMXHXResolver {
 			}
 		}
 		parserData.push(module);
+	}
+
+	private function qnameToParams(qname:String, paramsIndex:Int):Array<IMXHXTypeSymbol> {
+		var params:Array<IMXHXTypeSymbol> = null;
+		var paramsString = qname.substring(paramsIndex + 1, qname.length - 1);
+		if (paramsString.length > 0) {
+			params = [];
+			var startIndex = 0;
+			var searchIndex = 0;
+			var stackSize = 0;
+			while (startIndex < paramsString.length) {
+				var nextLeftBracketIndex = paramsString.indexOf("<", searchIndex);
+				var nextRightBracketIndex = paramsString.indexOf(">", searchIndex);
+				var nextCommaIndex = paramsString.indexOf(",", searchIndex);
+				if (nextRightBracketIndex != -1
+					&& ((nextCommaIndex == -1 && nextLeftBracketIndex == -1)
+						|| (nextLeftBracketIndex != -1 && nextRightBracketIndex < nextLeftBracketIndex)
+						|| (nextCommaIndex != -1 && nextRightBracketIndex < nextCommaIndex))) {
+					stackSize--;
+					searchIndex = nextRightBracketIndex + 1;
+				} else if (nextLeftBracketIndex != -1
+					&& ((nextCommaIndex == -1 && nextLeftBracketIndex == -1)
+						|| (nextCommaIndex != -1 && nextLeftBracketIndex < nextCommaIndex)
+						|| (nextRightBracketIndex != -1 && nextLeftBracketIndex < nextRightBracketIndex))) {
+					stackSize++;
+					searchIndex = nextLeftBracketIndex + 1;
+				} else if (nextCommaIndex != -1) {
+					searchIndex = nextCommaIndex + 1;
+					if (stackSize == 0) {
+						var qname = paramsString.substring(startIndex, nextCommaIndex);
+						params.push(resolveQname(qname));
+						startIndex = searchIndex;
+					}
+				} else {
+					var qname = paramsString.substring(startIndex);
+					params.push(resolveQname(qname));
+					searchIndex = paramsString.length;
+					startIndex = searchIndex;
+				}
+			}
+		}
+		return params;
 	}
 
 	private function resolveImportsForModuleName(moduleToFind:String):Array<TypeDecl> {
