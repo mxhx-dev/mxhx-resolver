@@ -160,7 +160,7 @@ class MXHXMacroResolver implements IMXHXResolver {
 			if (discoveredParams != null && discoveredParams.length > 0) {
 				qname += "<";
 				for (i in 0...discoveredParams.length) {
-					var param = discoveredParams[0];
+					var param = discoveredParams[i];
 					if (i > 0) {
 						qname += ",";
 					}
@@ -261,7 +261,7 @@ class MXHXMacroResolver implements IMXHXResolver {
 				if (discoveredParams != null && discoveredParams.length > 0) {
 					qname += "<";
 					for (i in 0...discoveredParams.length) {
-						var param = discoveredParams[0];
+						var param = discoveredParams[i];
 						if (i > 0) {
 							qname += ",";
 						}

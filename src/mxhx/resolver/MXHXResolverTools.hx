@@ -20,7 +20,7 @@ class MXHXResolverTools {
 		if (params != null && params.length > 0) {
 			qname += "<";
 			for (i in 0...params.length) {
-				var param = params[0];
+				var param = params[i];
 				if (i > 0) {
 					qname += ",";
 				}
