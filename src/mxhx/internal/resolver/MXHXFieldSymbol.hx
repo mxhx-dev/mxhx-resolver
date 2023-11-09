@@ -10,10 +10,12 @@ class MXHXFieldSymbol implements IMXHXFieldSymbol {
 	public var offsets:{start:Int, end:Int};
 	public var type:IMXHXTypeSymbol;
 	public var isMethod:Bool;
+	public var isPublic:Bool;
 
-	public function new(name:String, ?type:IMXHXTypeSymbol, isMethod:Bool = false) {
+	public function new(name:String, ?type:IMXHXTypeSymbol, isMethod:Bool = false, isPublic:Bool = true) {
 		this.name = name;
 		this.type = type;
 		this.isMethod = isMethod;
+		this.isPublic = isPublic;
 	}
 }

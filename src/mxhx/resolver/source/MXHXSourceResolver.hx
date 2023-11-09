@@ -592,7 +592,8 @@ class MXHXSourceResolver implements IMXHXResolver {
 			case FFun(f): true;
 			default: null;
 		}
-		var result = new MXHXFieldSymbol(field.name, resolvedType, isMethod);
+		var isPublic = field.access != null && field.access.indexOf(APublic) != -1;
+		var result = new MXHXFieldSymbol(field.name, resolvedType, isMethod, isPublic);
 		result.doc = field.doc;
 		result.file = field.pos.file;
 		result.offsets = {start: field.pos.min, end: field.pos.max};

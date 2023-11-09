@@ -383,7 +383,7 @@ class MXHXMacroResolver implements IMXHXResolver {
 			case FMethod(k): true;
 			default: null;
 		}
-		var result = new MXHXFieldSymbol(classField.name, resolvedType, isMethod);
+		var result = new MXHXFieldSymbol(classField.name, resolvedType, isMethod, classField.isPublic);
 		final posInfos = Context.getPosInfos(classField.pos);
 		result.file = posInfos.file;
 		result.offsets = {start: posInfos.min, end: posInfos.max};

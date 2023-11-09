@@ -27,4 +27,9 @@ interface IMXHXFieldSymbol extends IMXHXSymbol {
 		Indicates whether the field is a method or not.
 	**/
 	public var isMethod:Bool;
+
+	/**
+		Indicates whether the field is public or private.
+	**/
+	public var isPublic:Bool;
 }
