@@ -32,4 +32,9 @@ interface IMXHXFieldSymbol extends IMXHXSymbol {
 		Indicates whether the field is public or private.
 	**/
 	public var isPublic:Bool;
+
+	/**
+		Indicates whether the field is static or not.
+	**/
+	public var isStatic:Bool;
 }

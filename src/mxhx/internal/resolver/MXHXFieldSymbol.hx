@@ -11,11 +11,13 @@ class MXHXFieldSymbol implements IMXHXFieldSymbol {
 	public var type:IMXHXTypeSymbol;
 	public var isMethod:Bool;
 	public var isPublic:Bool;
+	public var isStatic:Bool;
 
-	public function new(name:String, ?type:IMXHXTypeSymbol, isMethod:Bool = false, isPublic:Bool = true) {
+	public function new(name:String, ?type:IMXHXTypeSymbol, isMethod:Bool = false, isPublic:Bool = true, isStatic:Bool = false) {
 		this.name = name;
 		this.type = type;
 		this.isMethod = isMethod;
 		this.isPublic = isPublic;
+		this.isStatic = isStatic;
 	}
 }

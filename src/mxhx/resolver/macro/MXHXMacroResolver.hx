@@ -373,7 +373,7 @@ class MXHXMacroResolver implements IMXHXResolver {
 		return qnameType;
 	}
 
-	private function createMXHXFieldSymbolForClassField(classField:ClassField):IMXHXFieldSymbol {
+	private function createMXHXFieldSymbolForClassField(classField:ClassField, isStatic:Bool):IMXHXFieldSymbol {
 		var resolvedType:IMXHXTypeSymbol = null;
 		var typeQname = macroTypeToQname(classField.type);
 		if (typeQname != null) {
@@ -383,7 +383,7 @@ class MXHXMacroResolver implements IMXHXResolver {
 			case FMethod(k): true;
 			default: null;
 		}
-		var result = new MXHXFieldSymbol(classField.name, resolvedType, isMethod, classField.isPublic);
+		var result = new MXHXFieldSymbol(classField.name, resolvedType, isMethod, classField.isPublic, isStatic);
 		final posInfos = Context.getPosInfos(classField.pos);
 		result.file = posInfos.file;
 		result.offsets = {start: posInfos.min, end: posInfos.max};
@@ -438,7 +438,7 @@ class MXHXMacroResolver implements IMXHXResolver {
 			return cast resolveQname(interfaceQName);
 		});
 		result.params = params != null ? params : [];
-		result.fields = classType.fields.get().map(classField -> createMXHXFieldSymbolForClassField(classField));
+		result.fields = classType.fields.get().map(classField -> createMXHXFieldSymbolForClassField(classField, false));
 
 		return result;
 	}
@@ -471,7 +471,7 @@ class MXHXMacroResolver implements IMXHXResolver {
 			return cast resolveQname(interfaceQName);
 		});
 		result.params = params != null ? params : [];
-		result.fields = classType.fields.get().map(classField -> createMXHXFieldSymbolForClassField(classField));
+		result.fields = classType.fields.get().map(classField -> createMXHXFieldSymbolForClassField(classField, false));
 		result.events = classType.meta.extract(":event").map(eventMeta -> {
 			if (eventMeta.params.length != 1) {
 				return null;
