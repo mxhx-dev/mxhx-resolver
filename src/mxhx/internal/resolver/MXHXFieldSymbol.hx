@@ -12,6 +12,8 @@ class MXHXFieldSymbol implements IMXHXFieldSymbol {
 	public var isMethod:Bool;
 	public var isPublic:Bool;
 	public var isStatic:Bool;
+	public var isReadable:Bool;
+	public var isWritable:Bool;
 
 	public function new(name:String, ?type:IMXHXTypeSymbol, isMethod:Bool = false, isPublic:Bool = true, isStatic:Bool = false) {
 		this.name = name;

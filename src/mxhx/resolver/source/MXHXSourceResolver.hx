@@ -588,13 +588,25 @@ class MXHXSourceResolver implements IMXHXResolver {
 				resolveComplexType(f.ret, pack, moduleName, imports);
 			default: null;
 		}
-		var isMethod = switch (field.kind) {
-			case FFun(f): true;
-			default: null;
+		var isMethod = false;
+		var isReadable = false;
+		var isWritable = false;
+		switch (field.kind) {
+			case FFun(f):
+				isMethod = true;
+			case FVar(t, e):
+				isReadable = true;
+				isWritable = true;
+			case FProp(get, set, t, e):
+				isReadable = get == "default" || get == "get";
+				isWritable = set == "default" || set == "set";
+			default:
 		}
 		var isPublic = field.access != null && field.access.indexOf(APublic) != -1;
 		var isStatic = field.access != null && field.access.indexOf(AStatic) != -1;
 		var result = new MXHXFieldSymbol(field.name, resolvedType, isMethod, isPublic, isStatic);
+		result.isReadable = isReadable;
+		result.isWritable = isWritable;
 		result.doc = field.doc;
 		result.file = field.pos.file;
 		result.offsets = {start: field.pos.min, end: field.pos.max};

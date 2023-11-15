@@ -379,11 +379,28 @@ class MXHXMacroResolver implements IMXHXResolver {
 		if (typeQname != null) {
 			resolvedType = resolveQname(typeQname);
 		}
-		var isMethod = switch (classField.kind) {
-			case FMethod(k): true;
-			default: null;
+		var isMethod = false;
+		var isReadable = false;
+		var isWritable = false;
+		switch (classField.kind) {
+			case FMethod(k):
+				isMethod = true;
+			case FVar(read, write):
+				switch (read) {
+					case AccCall, AccNormal:
+						isReadable = true;
+					default:
+				};
+				switch (write) {
+					case AccCall, AccNormal:
+						isWritable = true;
+					default:
+				};
+			default:
 		}
 		var result = new MXHXFieldSymbol(classField.name, resolvedType, isMethod, classField.isPublic, isStatic);
+		result.isReadable = isReadable;
+		result.isWritable = isWritable;
 		final posInfos = Context.getPosInfos(classField.pos);
 		result.file = posInfos.file;
 		result.offsets = {start: posInfos.min, end: posInfos.max};

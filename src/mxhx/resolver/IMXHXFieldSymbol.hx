@@ -37,4 +37,14 @@ interface IMXHXFieldSymbol extends IMXHXSymbol {
 		Indicates whether the field is static or not.
 	**/
 	public var isStatic:Bool;
+
+	/**
+		Indicates whether the field is readable or not (default or get).
+	**/
+	public var isReadable:Bool;
+
+	/**
+		Indicates whether the field is writable or not (default or set).
+	**/
+	public var isWritable:Bool;
 }
