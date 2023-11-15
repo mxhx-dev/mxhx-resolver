@@ -71,4 +71,40 @@ class MXHXSymbolTools {
 		}
 		return null;
 	}
+
+	public function classSymbolExtends(classSymbol:IMXHXClassSymbol, possibleSuperClass:IMXHXClassSymbol):Bool {
+		var currentClassSymbol = classSymbol.superClass;
+		while (currentClassSymbol != null) {
+			if (currentClassSymbol == possibleSuperClass) {
+				return true;
+			}
+			currentClassSymbol = currentClassSymbol.superClass;
+		}
+		return false;
+	}
+
+	public function typeSymbolImplements(typeSymbol:IMXHXTypeSymbol, possibleSuperInterface:IMXHXInterfaceSymbol):Bool {
+		if ((typeSymbol is IMXHXClassSymbol)) {
+			var classSymbol:IMXHXClassSymbol = cast typeSymbol;
+			var currentClassSymbol = classSymbol;
+			while (currentClassSymbol != null) {
+				if (currentClassSymbol.interfaces.indexOf(possibleSuperInterface) != -1) {
+					return true;
+				}
+				currentClassSymbol = currentClassSymbol.superClass;
+			}
+		}
+		if ((typeSymbol is IMXHXInterfaceSymbol)) {
+			var interfaceSymbol:IMXHXInterfaceSymbol = cast typeSymbol;
+			var interfacesToSearch = [interfaceSymbol];
+			while (interfacesToSearch.length > 0) {
+				var currentInterfaceSymbol = interfacesToSearch.shift();
+				if (currentInterfaceSymbol.interfaces.indexOf(possibleSuperInterface) != -1) {
+					return true;
+				}
+				interfacesToSearch = interfacesToSearch.concat(currentInterfaceSymbol.interfaces);
+			}
+		}
+		return false;
+	}
 }

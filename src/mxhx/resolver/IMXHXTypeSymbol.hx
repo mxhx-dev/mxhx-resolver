@@ -14,6 +14,8 @@
 
 package mxhx.resolver;
 
+import haxe.macro.Expr.MetadataEntry;
+
 /**
 	An MXHX symbol representing a Haxe type, such as a class or abstract.
 **/

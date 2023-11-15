@@ -456,6 +456,7 @@ class MXHXMacroResolver implements IMXHXResolver {
 		});
 		result.params = params != null ? params : [];
 		result.fields = classType.fields.get().map(classField -> createMXHXFieldSymbolForClassField(classField, false));
+		result.meta = classType.meta.get().copy();
 
 		return result;
 	}
@@ -489,6 +490,7 @@ class MXHXMacroResolver implements IMXHXResolver {
 		});
 		result.params = params != null ? params : [];
 		result.fields = classType.fields.get().map(classField -> createMXHXFieldSymbolForClassField(classField, false));
+		result.meta = classType.meta.get().copy();
 		result.events = classType.meta.extract(":event").map(eventMeta -> {
 			if (eventMeta.params.length != 1) {
 				return null;
@@ -542,6 +544,7 @@ class MXHXMacroResolver implements IMXHXResolver {
 
 		result.params = params != null ? params : [];
 		result.fields = abstractType.impl.get().statics.get().map(field -> createMXHXEnumFieldSymbolForAbstractField(field, result));
+		result.meta = abstractType.meta.get().copy();
 		return result;
 	}
 
@@ -564,6 +567,7 @@ class MXHXMacroResolver implements IMXHXResolver {
 			fields.push(createMXHXEnumFieldSymbolForEnumField(value, result));
 		}
 		result.fields = fields;
+		result.meta = enumType.meta.get().copy();
 		return result;
 	}
 

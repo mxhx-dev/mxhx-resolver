@@ -1,5 +1,6 @@
 package mxhx.internal.resolver;
 
+import haxe.macro.Expr.MetadataEntry;
 import mxhx.resolver.IMXHXTypeSymbol;
 
 class MXHXTypeSymbol implements IMXHXTypeSymbol {
@@ -11,6 +12,7 @@ class MXHXTypeSymbol implements IMXHXTypeSymbol {
 	public var qname:String;
 	public var module:String;
 	public var params:Array<IMXHXTypeSymbol>;
+	public var meta:Array<MetadataEntry>;
 
 	public function new(name:String, ?pack:Array<String>, ?params:Array<IMXHXTypeSymbol>) {
 		this.name = name;

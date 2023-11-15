@@ -1,5 +1,6 @@
 package mxhx.internal.resolver;
 
+import haxe.macro.Expr.MetadataEntry;
 import mxhx.resolver.IMXHXTypeSymbol;
 import mxhx.resolver.IMXHXFieldSymbol;
 
@@ -14,6 +15,7 @@ class MXHXFieldSymbol implements IMXHXFieldSymbol {
 	public var isStatic:Bool;
 	public var isReadable:Bool;
 	public var isWritable:Bool;
+	public var meta:Array<MetadataEntry>;
 
 	public function new(name:String, ?type:IMXHXTypeSymbol, isMethod:Bool = false, isPublic:Bool = true, isStatic:Bool = false) {
 		this.name = name;

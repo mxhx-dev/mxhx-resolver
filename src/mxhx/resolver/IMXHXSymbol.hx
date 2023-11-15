@@ -14,6 +14,8 @@
 
 package mxhx.resolver;
 
+import haxe.macro.Expr.MetadataEntry;
+
 /**
 	Any symbol represented in MXHX.
 **/
@@ -38,4 +40,9 @@ interface IMXHXSymbol {
 		The position within the file containing the symbol.
 	**/
 	public var offsets:{start:Int, end:Int};
+
+	/**
+		The metadata associated with this symbol. May be null.
+	**/
+	public var meta:Array<MetadataEntry>;
 }

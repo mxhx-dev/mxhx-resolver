@@ -610,6 +610,7 @@ class MXHXSourceResolver implements IMXHXResolver {
 		result.doc = field.doc;
 		result.file = field.pos.file;
 		result.offsets = {start: field.pos.min, end: field.pos.max};
+		result.meta = field.meta != null ? field.meta.copy() : null;
 		return result;
 	}
 
@@ -618,12 +619,14 @@ class MXHXSourceResolver implements IMXHXResolver {
 		var args = enumConstructor.args.map(arg -> createMXHXArgumentSymbolForFunctionArg(arg, pack, moduleName, imports));
 		var result = new MXHXEnumFieldSymbol(enumConstructor.name, parent, args);
 		result.doc = enumConstructor.doc;
+		result.meta = enumConstructor.meta != null ? enumConstructor.meta.copy() : null;
 		return result;
 	}
 
 	private function createMXHXEnumFieldSymbolForAbstractField(abstractField:Field, parent:IMXHXEnumSymbol):IMXHXEnumFieldSymbol {
 		var result = new MXHXEnumFieldSymbol(abstractField.name, parent, null);
 		result.doc = abstractField.doc;
+		result.meta = abstractField.meta != null ? abstractField.meta.copy() : null;
 		return result;
 	}
 
@@ -663,6 +666,7 @@ class MXHXSourceResolver implements IMXHXResolver {
 		result.interfaces = resolvedInterfaces;
 		result.params = params != null ? params : [];
 		result.fields = classDefinition.data.map(field -> createMXHXFieldSymbolForField(field, pack, moduleName, imports));
+		result.meta = classDefinition.meta.copy();
 		return result;
 	}
 
@@ -703,6 +707,7 @@ class MXHXSourceResolver implements IMXHXResolver {
 		result.interfaces = resolvedInterfaces;
 		result.params = params != null ? params : [];
 		result.fields = classDefinition.data.map(field -> createMXHXFieldSymbolForField(field, pack, moduleName, imports));
+		result.meta = classDefinition.meta.copy();
 		result.events = classDefinition.meta.map(eventMeta -> {
 			if (eventMeta.name != ":event") {
 				return null;
@@ -765,6 +770,7 @@ class MXHXSourceResolver implements IMXHXResolver {
 		result.params = params != null ? params : [];
 		result.fields = abstractDefinition.data.filter(field -> field.access.indexOf(AStatic) != -1)
 			.map(field -> createMXHXEnumFieldSymbolForAbstractField(field, result));
+		result.meta = abstractDefinition.meta.copy();
 		return result;
 	}
 
@@ -789,6 +795,7 @@ class MXHXSourceResolver implements IMXHXResolver {
 			fields.push(createMXHXEnumFieldSymbolForEnumField(enumConstructor, result, pack, moduleName, imports));
 		}
 		result.fields = fields;
+		result.meta = enumDefinition.meta.copy();
 		return result;
 	}
 
