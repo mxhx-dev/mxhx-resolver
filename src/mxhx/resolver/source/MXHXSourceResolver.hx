@@ -646,6 +646,7 @@ class MXHXSourceResolver implements IMXHXResolver {
 		result.doc = classDefinition.doc;
 		result.file = pos.file;
 		result.offsets = {start: pos.min, end: pos.max};
+		result.isPrivate = classDefinition.flags.indexOf(HPrivate) != -1;
 		// fields may reference this type, so make sure that it's available
 		// before parsing anything else
 		qnameToMXHXTypeSymbolLookup.set(qname, result);
@@ -680,6 +681,7 @@ class MXHXSourceResolver implements IMXHXResolver {
 		result.doc = classDefinition.doc;
 		result.file = pos.file;
 		result.offsets = {start: pos.min, end: pos.max};
+		result.isPrivate = classDefinition.flags.indexOf(HPrivate) != -1;
 		// fields may reference this type, so make sure that it's available
 		// before parsing anything else
 		qnameToMXHXTypeSymbolLookup.set(qname, result);
@@ -738,6 +740,7 @@ class MXHXSourceResolver implements IMXHXResolver {
 		result.doc = abstractDefinition.doc;
 		result.file = pos.file;
 		result.offsets = {start: pos.min, end: pos.max};
+		result.isPrivate = abstractDefinition.flags.indexOf(AbPrivate) != -1;
 		if (moduleName == MODULE_STD_TYPES) {
 			qnameToMXHXTypeSymbolLookup.set(MODULE_STD_TYPES + "." + qname, result);
 		}
@@ -763,6 +766,7 @@ class MXHXSourceResolver implements IMXHXResolver {
 		result.doc = abstractDefinition.doc;
 		result.file = pos.file;
 		result.offsets = {start: pos.min, end: pos.max};
+		result.isPrivate = abstractDefinition.flags.indexOf(AbPrivate) != -1;
 		// fields may reference this type, so make sure that it's available
 		// before parsing anything else
 		qnameToMXHXTypeSymbolLookup.set(qname, result);
@@ -784,6 +788,7 @@ class MXHXSourceResolver implements IMXHXResolver {
 		result.doc = enumDefinition.doc;
 		result.file = pos.file;
 		result.offsets = {start: pos.min, end: pos.max};
+		result.isPrivate = enumDefinition.flags.indexOf(EPrivate) != -1;
 		// fields may reference this type, so make sure that it's available
 		// before parsing anything else
 		qnameToMXHXTypeSymbolLookup.set(qname, result);

@@ -444,6 +444,7 @@ class MXHXMacroResolver implements IMXHXResolver {
 		final posInfos = Context.getPosInfos(classType.pos);
 		result.file = posInfos.file;
 		result.offsets = {start: posInfos.min, end: posInfos.max};
+		result.isPrivate = classType.isPrivate;
 		// fields may reference this type, so make sure that it's available
 		// before parsing anything else
 		qnameLookup.set(qname, result);
@@ -470,6 +471,7 @@ class MXHXMacroResolver implements IMXHXResolver {
 		final posInfos = Context.getPosInfos(classType.pos);
 		result.file = posInfos.file;
 		result.offsets = {start: posInfos.min, end: posInfos.max};
+		result.isPrivate = classType.isPrivate;
 		// fields may reference this type, so make sure that it's available
 		// before parsing anything else
 		qnameLookup.set(qname, result);
@@ -517,6 +519,7 @@ class MXHXMacroResolver implements IMXHXResolver {
 		final posInfos = Context.getPosInfos(abstractType.pos);
 		result.file = posInfos.file;
 		result.offsets = {start: posInfos.min, end: posInfos.max};
+		result.isPrivate = abstractType.isPrivate;
 		// fields may reference this type, so make sure that it's available
 		// before parsing anything else
 		qnameLookup.set(qname, result);
@@ -538,6 +541,7 @@ class MXHXMacroResolver implements IMXHXResolver {
 		final posInfos = Context.getPosInfos(abstractType.pos);
 		result.file = posInfos.file;
 		result.offsets = {start: posInfos.min, end: posInfos.max};
+		result.isPrivate = abstractType.isPrivate;
 		// fields may reference this type, so make sure that it's available
 		// before parsing anything else
 		qnameLookup.set(qname, result);
@@ -557,6 +561,7 @@ class MXHXMacroResolver implements IMXHXResolver {
 		final posInfos = Context.getPosInfos(enumType.pos);
 		result.file = posInfos.file;
 		result.offsets = {start: posInfos.min, end: posInfos.max};
+		result.isPrivate = enumType.isPrivate;
 		// fields may reference this type, so make sure that it's available
 		// before parsing anything else
 		qnameLookup.set(qname, result);
