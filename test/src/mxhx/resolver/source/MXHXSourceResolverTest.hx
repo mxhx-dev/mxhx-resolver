@@ -168,6 +168,7 @@ class MXHXSourceResolverTest extends Test {
 	public function testResolveAnyField():Void {
 		var resolvedClass:IMXHXClassSymbol = cast resolver.resolveQname("fixtures.TestPropertiesClass");
 		Assert.notNull(resolvedClass);
+		Assert.isOfType(resolvedClass, IMXHXClassSymbol);
 		var resolvedField = Lambda.find(resolvedClass.fields, field -> field.name == "any");
 		Assert.notNull(resolvedField);
 		Assert.notNull(resolvedField.type);
@@ -177,6 +178,7 @@ class MXHXSourceResolverTest extends Test {
 	public function testResolveArrayField():Void {
 		var resolvedClass:IMXHXClassSymbol = cast resolver.resolveQname("fixtures.TestPropertiesClass");
 		Assert.notNull(resolvedClass);
+		Assert.isOfType(resolvedClass, IMXHXClassSymbol);
 		var resolvedField = Lambda.find(resolvedClass.fields, field -> field.name == "array");
 		Assert.notNull(resolvedField);
 		Assert.notNull(resolvedField.type);
@@ -186,6 +188,7 @@ class MXHXSourceResolverTest extends Test {
 	public function testResolveBoolField():Void {
 		var resolvedClass:IMXHXClassSymbol = cast resolver.resolveQname("fixtures.TestPropertiesClass");
 		Assert.notNull(resolvedClass);
+		Assert.isOfType(resolvedClass, IMXHXClassSymbol);
 		var resolvedField = Lambda.find(resolvedClass.fields, field -> field.name == "boolean");
 		Assert.notNull(resolvedField);
 		Assert.notNull(resolvedField.type);
@@ -195,6 +198,7 @@ class MXHXSourceResolverTest extends Test {
 	public function testResolveClassField():Void {
 		var resolvedClass:IMXHXClassSymbol = cast resolver.resolveQname("fixtures.TestPropertiesClass");
 		Assert.notNull(resolvedClass);
+		Assert.isOfType(resolvedClass, IMXHXClassSymbol);
 		var resolvedField = Lambda.find(resolvedClass.fields, field -> field.name == "type");
 		Assert.notNull(resolvedField);
 		Assert.notNull(resolvedField.type);
@@ -204,6 +208,7 @@ class MXHXSourceResolverTest extends Test {
 	public function testResolveDateField():Void {
 		var resolvedClass:IMXHXClassSymbol = cast resolver.resolveQname("fixtures.TestPropertiesClass");
 		Assert.notNull(resolvedClass);
+		Assert.isOfType(resolvedClass, IMXHXClassSymbol);
 		var resolvedField = Lambda.find(resolvedClass.fields, field -> field.name == "date");
 		Assert.notNull(resolvedField);
 		Assert.notNull(resolvedField.type);
@@ -213,6 +218,7 @@ class MXHXSourceResolverTest extends Test {
 	public function testResolveDynamicField():Void {
 		var resolvedClass:IMXHXClassSymbol = cast resolver.resolveQname("fixtures.TestPropertiesClass");
 		Assert.notNull(resolvedClass);
+		Assert.isOfType(resolvedClass, IMXHXClassSymbol);
 		var resolvedField = Lambda.find(resolvedClass.fields, field -> field.name == "struct");
 		Assert.notNull(resolvedField);
 		Assert.notNull(resolvedField.type);
@@ -222,6 +228,7 @@ class MXHXSourceResolverTest extends Test {
 	public function testResolveERegField():Void {
 		var resolvedClass:IMXHXClassSymbol = cast resolver.resolveQname("fixtures.TestPropertiesClass");
 		Assert.notNull(resolvedClass);
+		Assert.isOfType(resolvedClass, IMXHXClassSymbol);
 		var resolvedField = Lambda.find(resolvedClass.fields, field -> field.name == "ereg");
 		Assert.notNull(resolvedField);
 		Assert.notNull(resolvedField.type);
@@ -231,6 +238,7 @@ class MXHXSourceResolverTest extends Test {
 	public function testResolveFloatField():Void {
 		var resolvedClass:IMXHXClassSymbol = cast resolver.resolveQname("fixtures.TestPropertiesClass");
 		Assert.notNull(resolvedClass);
+		Assert.isOfType(resolvedClass, IMXHXClassSymbol);
 		var resolvedField = Lambda.find(resolvedClass.fields, field -> field.name == "float");
 		Assert.notNull(resolvedField);
 		Assert.notNull(resolvedField.type);
@@ -240,6 +248,7 @@ class MXHXSourceResolverTest extends Test {
 	public function testResolveFunctionConstraintField():Void {
 		var resolvedClass:IMXHXClassSymbol = cast resolver.resolveQname("fixtures.TestPropertiesClass");
 		Assert.notNull(resolvedClass);
+		Assert.isOfType(resolvedClass, IMXHXClassSymbol);
 		var resolvedField = Lambda.find(resolvedClass.fields, field -> field.name == "func");
 		Assert.notNull(resolvedField);
 		Assert.notNull(resolvedField.type);
@@ -249,6 +258,7 @@ class MXHXSourceResolverTest extends Test {
 	public function testResolveFunctionSignatureField():Void {
 		var resolvedClass:IMXHXClassSymbol = cast resolver.resolveQname("fixtures.TestPropertiesClass");
 		Assert.notNull(resolvedClass);
+		Assert.isOfType(resolvedClass, IMXHXClassSymbol);
 		var resolvedField = Lambda.find(resolvedClass.fields, field -> field.name == "funcTyped");
 		Assert.notNull(resolvedField);
 		Assert.notNull(resolvedField.type);
@@ -258,6 +268,7 @@ class MXHXSourceResolverTest extends Test {
 	public function testResolveIntField():Void {
 		var resolvedClass:IMXHXClassSymbol = cast resolver.resolveQname("fixtures.TestPropertiesClass");
 		Assert.notNull(resolvedClass);
+		Assert.isOfType(resolvedClass, IMXHXClassSymbol);
 		var resolvedField = Lambda.find(resolvedClass.fields, field -> field.name == "integer");
 		Assert.notNull(resolvedField);
 		Assert.notNull(resolvedField.type);
@@ -267,6 +278,7 @@ class MXHXSourceResolverTest extends Test {
 	public function testResolveStringField():Void {
 		var resolvedClass:IMXHXClassSymbol = cast resolver.resolveQname("fixtures.TestPropertiesClass");
 		Assert.notNull(resolvedClass);
+		Assert.isOfType(resolvedClass, IMXHXClassSymbol);
 		var resolvedField = Lambda.find(resolvedClass.fields, field -> field.name == "string");
 		Assert.notNull(resolvedField);
 		Assert.notNull(resolvedField.type);
@@ -276,6 +288,7 @@ class MXHXSourceResolverTest extends Test {
 	public function testResolveUIntField():Void {
 		var resolvedClass:IMXHXClassSymbol = cast resolver.resolveQname("fixtures.TestPropertiesClass");
 		Assert.notNull(resolvedClass);
+		Assert.isOfType(resolvedClass, IMXHXClassSymbol);
 		var resolvedField = Lambda.find(resolvedClass.fields, field -> field.name == "unsignedInteger");
 		Assert.notNull(resolvedField);
 		Assert.notNull(resolvedField.type);
@@ -285,6 +298,7 @@ class MXHXSourceResolverTest extends Test {
 	public function testResolveXmlField():Void {
 		var resolvedClass:IMXHXClassSymbol = cast resolver.resolveQname("fixtures.TestPropertiesClass");
 		Assert.notNull(resolvedClass);
+		Assert.isOfType(resolvedClass, IMXHXClassSymbol);
 		var resolvedField = Lambda.find(resolvedClass.fields, field -> field.name == "xml");
 		Assert.notNull(resolvedField);
 		Assert.notNull(resolvedField.type);
@@ -294,6 +308,7 @@ class MXHXSourceResolverTest extends Test {
 	public function testResolveNullField():Void {
 		var resolvedClass:IMXHXClassSymbol = cast resolver.resolveQname("fixtures.TestPropertiesClass");
 		Assert.notNull(resolvedClass);
+		Assert.isOfType(resolvedClass, IMXHXClassSymbol);
 		var resolvedField = Lambda.find(resolvedClass.fields, field -> field.name == "canBeNull");
 		Assert.notNull(resolvedField);
 		Assert.notNull(resolvedField.type);
@@ -303,6 +318,7 @@ class MXHXSourceResolverTest extends Test {
 	public function testResolveStrictlyTypedField():Void {
 		var resolvedClass:IMXHXClassSymbol = cast resolver.resolveQname("fixtures.TestPropertiesClass");
 		Assert.notNull(resolvedClass);
+		Assert.isOfType(resolvedClass, IMXHXClassSymbol);
 		var resolvedField = Lambda.find(resolvedClass.fields, field -> field.name == "strictlyTyped");
 		Assert.notNull(resolvedField);
 		Assert.notNull(resolvedField.type);
@@ -310,8 +326,9 @@ class MXHXSourceResolverTest extends Test {
 	}
 
 	public function testResolveStrictlyTypedInterfaceField():Void {
-		var resolvedClass:IMXHXInterfaceSymbol = cast resolver.resolveQname("fixtures.TestPropertiesClass");
+		var resolvedClass:IMXHXClassSymbol = cast resolver.resolveQname("fixtures.TestPropertiesClass");
 		Assert.notNull(resolvedClass);
+		Assert.isOfType(resolvedClass, IMXHXClassSymbol);
 		var resolvedField = Lambda.find(resolvedClass.fields, field -> field.name == "strictInterface");
 		Assert.notNull(resolvedField);
 		Assert.notNull(resolvedField.type);
@@ -321,6 +338,7 @@ class MXHXSourceResolverTest extends Test {
 	public function testResolveAbstractEnumValueField():Void {
 		var resolvedClass:IMXHXClassSymbol = cast resolver.resolveQname("fixtures.TestPropertiesClass");
 		Assert.notNull(resolvedClass);
+		Assert.isOfType(resolvedClass, IMXHXClassSymbol);
 		var resolvedField = Lambda.find(resolvedClass.fields, field -> field.name == "abstractEnumValue");
 		Assert.notNull(resolvedField);
 		Assert.notNull(resolvedField.type);
@@ -330,15 +348,18 @@ class MXHXSourceResolverTest extends Test {
 	public function testResolveEnumValueField():Void {
 		var resolvedClass:IMXHXClassSymbol = cast resolver.resolveQname("fixtures.TestPropertiesClass");
 		Assert.notNull(resolvedClass);
+		Assert.isOfType(resolvedClass, IMXHXClassSymbol);
 		var resolvedField = Lambda.find(resolvedClass.fields, field -> field.name == "enumValue");
 		Assert.notNull(resolvedField);
 		Assert.notNull(resolvedField.type);
+		Assert.isOfType(resolvedField.type, IMXHXEnumSymbol);
 		Assert.equals("fixtures.TestPropertyEnum", resolvedField.type.qname);
 	}
 
 	public function testResolveClassFromModuleWithDifferentName():Void {
 		var resolvedClass:IMXHXClassSymbol = cast resolver.resolveQname("fixtures.TestPropertiesClass");
 		Assert.notNull(resolvedClass);
+		Assert.isOfType(resolvedClass, IMXHXClassSymbol);
 		var resolvedField = Lambda.find(resolvedClass.fields, field -> field.name == "classFromModuleWithDifferentName");
 		Assert.notNull(resolvedField);
 		Assert.notNull(resolvedField.type);
@@ -348,6 +369,7 @@ class MXHXSourceResolverTest extends Test {
 	public function testResolveFieldWithTypeParameter():Void {
 		var resolvedClass:IMXHXClassSymbol = cast resolver.resolveQname("fixtures.ArrayCollection");
 		Assert.notNull(resolvedClass);
+		Assert.isOfType(resolvedClass, IMXHXClassSymbol);
 		var resolvedField = Lambda.find(resolvedClass.fields, field -> field.name == "array");
 		Assert.notNull(resolvedField);
 		Assert.notNull(resolvedField.type);
@@ -876,6 +898,7 @@ class MXHXSourceResolverTest extends Test {
 		Assert.isOfType(resolved, IMXHXFieldSymbol);
 		var fieldSymbol:IMXHXFieldSymbol = cast resolved;
 		Assert.notNull(fieldSymbol.type);
+		Assert.isOfType(resolvedField.type, IMXHXEnumSymbol);
 		Assert.equals("fixtures.TestPropertyEnum", fieldSymbol.type.qname);
 	}
 
@@ -1225,8 +1248,8 @@ class MXHXSourceResolverTest extends Test {
 
 		var resolved = resolver.resolveTag(offsetTag);
 		Assert.notNull(resolved);
-		Assert.isOfType(resolved, IMXHXTypeSymbol);
-		var typeSymbol:IMXHXTypeSymbol = cast resolved;
+		Assert.isOfType(resolved, IMXHXEnumSymbol);
+		var typeSymbol:IMXHXEnumSymbol = cast resolved;
 		Assert.equals("fixtures.TestPropertyEnum", typeSymbol.qname);
 	}
 
