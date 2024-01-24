@@ -1,73 +1,23 @@
-package mxhx.resolver.source;
+package mxhx.resolver.rtti;
 
-#if haxeparser
-import mxhx.resolver.IMXHXFieldSymbol;
-import mxhx.parser.MXHXParser;
-import mxhx.IMXHXData;
-import mxhx.resolver.source.MXHXSourceResolver;
+import haxe.Resource;
+import mxhx.resolver.IMXHXEnumSymbol;
 import mxhx.resolver.IMXHXClassSymbol;
-import mxhx.resolver.IMXHXInterfaceSymbol;
-import mxhx.resolver.IMXHXTypeSymbol;
+import mxhx.parser.MXHXParser;
 import utest.Test;
 import utest.Assert;
-import haxeparser.Data;
-import haxeparser.HaxeParser;
-import sys.FileSystem;
-import sys.io.File;
-import haxe.io.Path;
-import haxe.Resource;
-import byte.ByteData;
 
-class MXHXSourceResolverTest extends Test {
+class MXHXRttiResolverTest extends Test {
 	private static function getOffsetTag(source:String, offset:Int):IMXHXTagData {
 		var parser = new MXHXParser(source, "source.mxhx");
 		var mxhxData = parser.parse();
 		return mxhxData.findTagOrSurroundingTagContainingOffset(offset);
 	}
 
-	private var resolver:MXHXSourceResolver;
+	private var resolver:MXHXRttiResolver;
 
-	public function setupClass():Void {
-		var haxeStdPath = Sys.getEnv("HAXE_STD_PATH");
-		if (haxeStdPath == null) {
-			#if windows
-			haxeStdPath = "C:/HaxeToolkit/haxe/std";
-			#else
-			haxeStdPath = "/usr/local/lib/haxe/std";
-			#end
-		}
-		var classPaths = [haxeStdPath, Path.join([Sys.getCwd(), "src/fixtures"])];
-		var parsed:Array<{pack:Array<String>, decls:Array<haxeparser.Data.TypeDecl>}> = [];
-		var directories = classPaths.copy();
-		while (directories.length > 0) {
-			var currentDirectory = directories.shift();
-			var fileNames:Array<String> = try {
-				FileSystem.readDirectory(currentDirectory);
-			} catch (e:Dynamic) {
-				continue;
-			};
-			for (fileName in fileNames) {
-				var filePath = Path.join([currentDirectory, fileName]);
-				try {
-					if (FileSystem.isDirectory(filePath)) {
-						directories.push(filePath);
-						continue;
-					}
-					if (!StringTools.endsWith(fileName, ".hx")) {
-						continue;
-					}
-					var content = sys.io.File.getContent(filePath);
-					var parser = new HaxeParser(ByteData.ofString(content), filePath);
-					// some standard library classes use #error if certain flags aren't set
-					parser.define("eval");
-					var result = parser.parse();
-					parsed.push(result);
-				} catch (e:Dynamic) {
-					// something went wrong, but we'll just skip it
-				}
-			}
-		}
-		resolver = new MXHXSourceResolver(parsed);
+	public function setup():Void {
+		resolver = new MXHXRttiResolver();
 
 		var content = Resource.getString("mxhx-manifest");
 		var xml = Xml.parse(content);
@@ -78,6 +28,10 @@ class MXHXSourceResolverTest extends Test {
 			mappings.set(xmlName, qname);
 		}
 		resolver.registerManifest("https://ns.mxhx.dev/2024/tests", mappings);
+	}
+
+	public function teardown():Void {
+		resolver = null;
 	}
 
 	public function testResolveAny():Void {
@@ -252,7 +206,7 @@ class MXHXSourceResolverTest extends Test {
 		var resolvedField = Lambda.find(resolvedClass.fields, field -> field.name == "func");
 		Assert.notNull(resolvedField);
 		Assert.notNull(resolvedField.type);
-		Assert.equals("haxe.Constraints.Function", resolvedField.type.qname);
+		Assert.equals("haxe.Function", resolvedField.type.qname);
 	}
 
 	public function testResolveFunctionSignatureField():Void {
@@ -262,7 +216,7 @@ class MXHXSourceResolverTest extends Test {
 		var resolvedField = Lambda.find(resolvedClass.fields, field -> field.name == "funcTyped");
 		Assert.notNull(resolvedField);
 		Assert.notNull(resolvedField.type);
-		Assert.equals("haxe.Constraints.Function", resolvedField.type.qname);
+		Assert.equals("haxe.Function", resolvedField.type.qname);
 	}
 
 	public function testResolveIntField():Void {
@@ -341,8 +295,12 @@ class MXHXSourceResolverTest extends Test {
 		Assert.isOfType(resolvedClass, IMXHXClassSymbol);
 		var resolvedField = Lambda.find(resolvedClass.fields, field -> field.name == "abstractEnumValue");
 		Assert.notNull(resolvedField);
+		#if interp
 		Assert.notNull(resolvedField.type);
 		Assert.equals("fixtures.TestPropertyAbstractEnum", resolvedField.type.qname);
+		#else
+		Assert.isNull(resolvedField.type);
+		#end
 	}
 
 	public function testResolveEnumValueField():Void {
@@ -504,7 +462,7 @@ class MXHXSourceResolverTest extends Test {
 		Assert.notNull(resolved);
 		Assert.isOfType(resolved, IMXHXTypeSymbol);
 		var typeSymbol:IMXHXTypeSymbol = cast resolved;
-		Assert.equals("haxe.Constraints.Function", typeSymbol.qname);
+		Assert.equals("haxe.Function", typeSymbol.qname);
 	}
 
 	public function testResolveDeclarationsInt():Void {
@@ -555,8 +513,8 @@ class MXHXSourceResolverTest extends Test {
 		Assert.notNull(resolved);
 		Assert.isOfType(resolved, IMXHXTypeSymbol);
 		var typeSymbol:IMXHXTypeSymbol = cast resolved;
-		// TODO: fix the % that should be used only internally
-		Assert.equals("Dynamic<%>", typeSymbol.qname);
+		// TODO: should this have a type parameter?
+		Assert.equals("Dynamic", typeSymbol.qname);
 	}
 
 	public function testResolveDeclarationsUInt():Void {
@@ -754,7 +712,7 @@ class MXHXSourceResolverTest extends Test {
 		Assert.isOfType(resolved, IMXHXFieldSymbol);
 		var fieldSymbol:IMXHXFieldSymbol = cast resolved;
 		Assert.notNull(fieldSymbol.type);
-		Assert.equals("haxe.Constraints.Function", fieldSymbol.type.qname);
+		Assert.equals("haxe.Function", fieldSymbol.type.qname);
 	}
 
 	public function testResolveFieldTypeFunctionSignature():Void {
@@ -772,7 +730,7 @@ class MXHXSourceResolverTest extends Test {
 		Assert.isOfType(resolved, IMXHXFieldSymbol);
 		var fieldSymbol:IMXHXFieldSymbol = cast resolved;
 		Assert.notNull(fieldSymbol.type);
-		Assert.equals("haxe.Constraints.Function", fieldSymbol.type.qname);
+		Assert.equals("haxe.Function", fieldSymbol.type.qname);
 	}
 
 	public function testResolveFieldTypeInt():Void {
@@ -879,8 +837,12 @@ class MXHXSourceResolverTest extends Test {
 		Assert.notNull(resolved);
 		Assert.isOfType(resolved, IMXHXFieldSymbol);
 		var fieldSymbol:IMXHXFieldSymbol = cast resolved;
+		#if interp
 		Assert.notNull(fieldSymbol.type);
 		Assert.equals("fixtures.TestPropertyAbstractEnum", fieldSymbol.type.qname);
+		#else
+		Assert.isNull(fieldSymbol.type);
+		#end
 	}
 
 	public function testResolveFieldTypeEnumValue():Void {
@@ -1026,8 +988,8 @@ class MXHXSourceResolverTest extends Test {
 		Assert.notNull(resolved);
 		Assert.isOfType(resolved, IMXHXTypeSymbol);
 		var typeSymbol:IMXHXTypeSymbol = cast resolved;
-		// TODO: fix the % that should be used only internally
-		Assert.equals("Class<%>", typeSymbol.qname);
+		// TODO: should this have a type parameter?
+		Assert.equals("Class", typeSymbol.qname);
 	}
 
 	public function testResolveFieldValueTypeDate():Void {
@@ -1061,8 +1023,8 @@ class MXHXSourceResolverTest extends Test {
 		Assert.notNull(resolved);
 		Assert.isOfType(resolved, IMXHXTypeSymbol);
 		var typeSymbol:IMXHXTypeSymbol = cast resolved;
-		// TODO: fix the % that should be used only internally
-		Assert.equals("Dynamic<%>", typeSymbol.qname);
+		// TODO: should this have a type parameter?
+		Assert.equals("Dynamic", typeSymbol.qname);
 	}
 
 	public function testResolveFieldValueTypeEReg():Void {
@@ -1113,7 +1075,7 @@ class MXHXSourceResolverTest extends Test {
 		Assert.notNull(resolved);
 		Assert.isOfType(resolved, IMXHXTypeSymbol);
 		var typeSymbol:IMXHXTypeSymbol = cast resolved;
-		Assert.equals("haxe.Constraints.Function", typeSymbol.qname);
+		Assert.equals("haxe.Function", typeSymbol.qname);
 	}
 
 	public function testResolveFieldValueTypeFunctionSignature():Void {
@@ -1130,7 +1092,7 @@ class MXHXSourceResolverTest extends Test {
 		Assert.notNull(resolved);
 		Assert.isOfType(resolved, IMXHXTypeSymbol);
 		var typeSymbol:IMXHXTypeSymbol = cast resolved;
-		Assert.equals("haxe.Constraints.Function", typeSymbol.qname);
+		Assert.equals("haxe.Function", typeSymbol.qname);
 	}
 
 	public function testResolveFieldValueTypeInt():Void {
@@ -1181,8 +1143,8 @@ class MXHXSourceResolverTest extends Test {
 		Assert.notNull(resolved);
 		Assert.isOfType(resolved, IMXHXTypeSymbol);
 		var typeSymbol:IMXHXTypeSymbol = cast resolved;
-		// TODO: fix the % that should be used only internally
-		Assert.equals("Dynamic<%>", typeSymbol.qname);
+		// TODO: should this have a type parameter?
+		Assert.equals("Dynamic", typeSymbol.qname);
 	}
 
 	public function testResolveFieldValueTypeUInt():Void {
@@ -1230,10 +1192,14 @@ class MXHXSourceResolverTest extends Test {
 		Assert.notNull(offsetTag);
 
 		var resolved = resolver.resolveTag(offsetTag);
+		#if interp
 		Assert.notNull(resolved);
 		Assert.isOfType(resolved, IMXHXTypeSymbol);
 		var typeSymbol:IMXHXTypeSymbol = cast resolved;
 		Assert.equals("fixtures.TestPropertyAbstractEnum", typeSymbol.qname);
+		#else
+		Assert.isNull(resolved);
+		#end
 	}
 
 	public function testResolveFieldValueTypeEnumValue():Void {
@@ -1304,4 +1270,3 @@ class MXHXSourceResolverTest extends Test {
 		Assert.equals("fixtures.TestPropertiesClass", typeSymbol.qname);
 	}
 }
-#end

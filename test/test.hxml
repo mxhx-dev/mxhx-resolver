@@ -4,4 +4,6 @@
 -lib utest
 -lib haxeparser
 -D mxhx-disable-experimental-warning
+--resource mxhx-manifest.xml@mxhx-manifest
+--macro haxe.macro.Compiler.addGlobalMetadata("fixtures", "@:rtti", true, true, false)
 --main Main
