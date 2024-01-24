@@ -110,14 +110,8 @@ class MXHXRttiResolver implements IMXHXResolver {
 		if (nameToResolve == "haxe.Constraints.Function") {
 			nameToResolve = "haxe.Function";
 		}
-		var resolvedClass = Type.resolveClass(nameToResolve);
-		var resolvedEnum:Enum<Dynamic> = null;
-		if ((resolvedClass is Enum)) {
-			resolvedEnum = cast resolvedClass;
-		} else if (resolvedClass == null) {
-			resolvedEnum = Type.resolveEnum(nameToResolve);
-		}
-		if (resolvedEnum != null) {
+		var resolvedEnum = Type.resolveEnum(nameToResolve);
+		if ((resolvedEnum is Enum)) {
 			var enumTypeTree:TypeTree;
 			try {
 				enumTypeTree = getTypeTree(resolvedEnum);
@@ -131,6 +125,7 @@ class MXHXRttiResolver implements IMXHXResolver {
 					return createMXHXEnumSymbolForEnum(resolvedEnum, params);
 			}
 		}
+		var resolvedClass = Type.resolveClass(nameToResolve);
 		if (resolvedClass == null) {
 			#if !interp
 			switch (nameToResolve) {
