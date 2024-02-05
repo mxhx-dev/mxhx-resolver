@@ -82,11 +82,33 @@ class MXHXRttiResolver implements IMXHXResolver {
 	}
 
 	public function resolveAttribute(attributeData:IMXHXTagAttributeData):IMXHXSymbol {
+		if (attributeData == null) {
+			return null;
+		}
+		var tagData:IMXHXTagData = attributeData.parentTag;
+		var tagSymbol = resolveTag(tagData);
+		if (tagSymbol == null || !(tagSymbol is IMXHXClassSymbol)) {
+			return null;
+		}
+		var classSymbol:IMXHXClassSymbol = cast tagSymbol;
+		var field = MXHXSymbolTools.resolveFieldByName(classSymbol, attributeData.shortName);
+		if (field != null) {
+			return field;
+		}
+		var event = MXHXSymbolTools.resolveEventByName(classSymbol, attributeData.shortName);
+		if (event != null) {
+			return event;
+		}
 		return null;
 	}
 
 	public function resolveTagField(tagData:IMXHXTagData, fieldName:String):IMXHXFieldSymbol {
-		return null;
+		var tagSymbol = resolveTag(tagData);
+		if (tagSymbol == null || !(tagSymbol is IMXHXClassSymbol)) {
+			return null;
+		}
+		var classSymbol:IMXHXClassSymbol = cast tagSymbol;
+		return MXHXSymbolTools.resolveFieldByName(classSymbol, fieldName);
 	}
 
 	public function resolveQname(qname:String):IMXHXTypeSymbol {
@@ -173,8 +195,16 @@ class MXHXRttiResolver implements IMXHXResolver {
 		return new haxe.rtti.XmlParser().processElement(x);
 	}
 
-	public function getTagNamesForQname(qname:String):Map<String, String> {
-		return null;
+	public function getTagNamesForQname(qnameToFind:String):Map<String, String> {
+		var result:Map<String, String> = [];
+		for (uri => mappings in manifests) {
+			for (tagName => qname in mappings) {
+				if (qname == qnameToFind) {
+					result.set(uri, tagName);
+				}
+			}
+		}
+		return result;
 	}
 
 	private function classToQname(resolvedClass:Class<Dynamic>, params:Array<IMXHXTypeSymbol> = null):String {
