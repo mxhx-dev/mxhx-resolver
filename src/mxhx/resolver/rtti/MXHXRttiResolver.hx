@@ -14,22 +14,16 @@
 
 package mxhx.resolver.rtti;
 
-import haxe.rtti.XmlParser;
-import haxe.rtti.Meta;
-import haxe.rtti.CType;
 import haxe.rtti.CType.ClassField;
 import haxe.rtti.CType.Classdef;
-import haxe.rtti.Rtti;
+import haxe.rtti.CType;
+import haxe.rtti.XmlParser;
 import mxhx.internal.resolver.MXHXAbstractSymbol;
-import mxhx.internal.resolver.MXHXArgumentSymbol;
 import mxhx.internal.resolver.MXHXClassSymbol;
-import mxhx.internal.resolver.MXHXEnumFieldSymbol;
 import mxhx.internal.resolver.MXHXEnumSymbol;
-import mxhx.internal.resolver.MXHXEventSymbol;
 import mxhx.internal.resolver.MXHXFieldSymbol;
 import mxhx.internal.resolver.MXHXInterfaceSymbol;
 import mxhx.resolver.IMXHXAbstractSymbol;
-import mxhx.resolver.IMXHXArgumentSymbol;
 import mxhx.resolver.IMXHXClassSymbol;
 import mxhx.resolver.IMXHXEnumFieldSymbol;
 import mxhx.resolver.IMXHXEnumSymbol;
@@ -39,8 +33,8 @@ import mxhx.resolver.IMXHXInterfaceSymbol;
 import mxhx.resolver.IMXHXResolver;
 import mxhx.resolver.IMXHXSymbol;
 import mxhx.resolver.IMXHXTypeSymbol;
-import mxhx.resolver.MXHXSymbolTools;
 import mxhx.resolver.MXHXResolvers;
+import mxhx.resolver.MXHXSymbolTools;
 
 /**
 
@@ -132,6 +126,12 @@ class MXHXRttiResolver implements IMXHXResolver {
 		if (nameToResolve == "haxe.Constraints.Function") {
 			nameToResolve = "haxe.Function";
 		}
+		// these built-in abstracts don't resolve consistently across targets at runtime
+		switch (nameToResolve) {
+			case "Any" | "Bool" | "Class" | "Dynamic" | "Enum" | "EnumValue" | "Float" | "Int" | "Null" | "UInt" | "haxe.Function":
+				return createMXHXAbstractSymbolForBuiltin(nameToResolve, params);
+			default:
+		}
 		var resolvedEnum = Type.resolveEnum(nameToResolve);
 		if ((resolvedEnum is Enum)) {
 			var enumTypeTree:TypeTree;
@@ -149,13 +149,6 @@ class MXHXRttiResolver implements IMXHXResolver {
 		}
 		var resolvedClass = Type.resolveClass(nameToResolve);
 		if (resolvedClass == null) {
-			#if !interp
-			switch (nameToResolve) {
-				case "Any" | "Bool" | "Class" | "Dynamic" | "Enum" | "EnumValue" | "Float" | "Int" | "Null" | "String" | "UInt" | "haxe.Function":
-					return createMXHXClassSymbolForMissing(nameToResolve, params);
-				default:
-			}
-			#end
 			return null;
 		}
 
@@ -227,7 +220,7 @@ class MXHXRttiResolver implements IMXHXResolver {
 		return MXHXResolverTools.definitionToQname(name, pack, moduleName, params != null ? params.map(param -> param != null ? param.qname : null) : []);
 	}
 
-	private function createMXHXClassSymbolForMissing(qname:String, params:Array<IMXHXTypeSymbol>):IMXHXClassSymbol {
+	private function createMXHXAbstractSymbolForBuiltin(qname:String, params:Array<IMXHXTypeSymbol>):IMXHXAbstractSymbol {
 		var dotIndex = qname.lastIndexOf(".");
 		var name = qname;
 		var pack:Array<String> = [];
@@ -241,7 +234,7 @@ class MXHXRttiResolver implements IMXHXResolver {
 			moduleName = pack.join(".") + "." + name;
 		}
 		qname = MXHXResolverTools.definitionToQname(name, pack, moduleName, params.map(param -> param != null ? param.qname : null));
-		var result = new MXHXClassSymbol(name, [], params);
+		var result = new MXHXAbstractSymbol(name, [], params);
 		result.qname = qname;
 		return result;
 	}

@@ -1,11 +1,13 @@
 package mxhx.resolver.rtti;
 
 import haxe.Resource;
-import mxhx.resolver.IMXHXEnumSymbol;
-import mxhx.resolver.IMXHXClassSymbol;
+import mxhx.internal.resolver.MXHXEnumSymbol;
 import mxhx.parser.MXHXParser;
-import utest.Test;
+import mxhx.resolver.IMXHXClassSymbol;
+import mxhx.resolver.IMXHXEnumSymbol;
+import mxhx.resolver.IMXHXInterfaceSymbol;
 import utest.Assert;
+import utest.Test;
 
 class MXHXRttiResolverTest extends Test {
 	private static function getOffsetTag(source:String, offset:Int):IMXHXTagData {
@@ -126,6 +128,7 @@ class MXHXRttiResolverTest extends Test {
 		var resolvedField = Lambda.find(resolvedClass.fields, field -> field.name == "any");
 		Assert.notNull(resolvedField);
 		Assert.notNull(resolvedField.type);
+		Assert.isOfType(resolvedField.type, IMXHXAbstractSymbol);
 		Assert.equals("Any", resolvedField.type.qname);
 	}
 
@@ -136,6 +139,7 @@ class MXHXRttiResolverTest extends Test {
 		var resolvedField = Lambda.find(resolvedClass.fields, field -> field.name == "array");
 		Assert.notNull(resolvedField);
 		Assert.notNull(resolvedField.type);
+		Assert.isOfType(resolvedField.type, IMXHXClassSymbol);
 		Assert.equals("Array<String>", resolvedField.type.qname);
 	}
 
@@ -146,6 +150,7 @@ class MXHXRttiResolverTest extends Test {
 		var resolvedField = Lambda.find(resolvedClass.fields, field -> field.name == "boolean");
 		Assert.notNull(resolvedField);
 		Assert.notNull(resolvedField.type);
+		Assert.isOfType(resolvedField.type, IMXHXAbstractSymbol);
 		Assert.equals("Bool", resolvedField.type.qname);
 	}
 
@@ -156,6 +161,7 @@ class MXHXRttiResolverTest extends Test {
 		var resolvedField = Lambda.find(resolvedClass.fields, field -> field.name == "type");
 		Assert.notNull(resolvedField);
 		Assert.notNull(resolvedField.type);
+		Assert.isOfType(resolvedField.type, IMXHXAbstractSymbol);
 		Assert.equals("Class<Dynamic>", resolvedField.type.qname);
 	}
 
@@ -166,6 +172,7 @@ class MXHXRttiResolverTest extends Test {
 		var resolvedField = Lambda.find(resolvedClass.fields, field -> field.name == "date");
 		Assert.notNull(resolvedField);
 		Assert.notNull(resolvedField.type);
+		Assert.isOfType(resolvedField.type, IMXHXClassSymbol);
 		Assert.equals("Date", resolvedField.type.qname);
 	}
 
@@ -176,6 +183,7 @@ class MXHXRttiResolverTest extends Test {
 		var resolvedField = Lambda.find(resolvedClass.fields, field -> field.name == "struct");
 		Assert.notNull(resolvedField);
 		Assert.notNull(resolvedField.type);
+		Assert.isOfType(resolvedField.type, IMXHXAbstractSymbol);
 		Assert.equals("Dynamic", resolvedField.type.qname);
 	}
 
@@ -186,6 +194,7 @@ class MXHXRttiResolverTest extends Test {
 		var resolvedField = Lambda.find(resolvedClass.fields, field -> field.name == "ereg");
 		Assert.notNull(resolvedField);
 		Assert.notNull(resolvedField.type);
+		Assert.isOfType(resolvedField.type, IMXHXClassSymbol);
 		Assert.equals("EReg", resolvedField.type.qname);
 	}
 
@@ -196,6 +205,7 @@ class MXHXRttiResolverTest extends Test {
 		var resolvedField = Lambda.find(resolvedClass.fields, field -> field.name == "float");
 		Assert.notNull(resolvedField);
 		Assert.notNull(resolvedField.type);
+		Assert.isOfType(resolvedField.type, IMXHXAbstractSymbol);
 		Assert.equals("Float", resolvedField.type.qname);
 	}
 
@@ -206,6 +216,7 @@ class MXHXRttiResolverTest extends Test {
 		var resolvedField = Lambda.find(resolvedClass.fields, field -> field.name == "func");
 		Assert.notNull(resolvedField);
 		Assert.notNull(resolvedField.type);
+		Assert.isOfType(resolvedField.type, IMXHXAbstractSymbol);
 		Assert.equals("haxe.Function", resolvedField.type.qname);
 	}
 
@@ -216,6 +227,7 @@ class MXHXRttiResolverTest extends Test {
 		var resolvedField = Lambda.find(resolvedClass.fields, field -> field.name == "funcTyped");
 		Assert.notNull(resolvedField);
 		Assert.notNull(resolvedField.type);
+		Assert.isOfType(resolvedField.type, IMXHXAbstractSymbol);
 		Assert.equals("haxe.Function", resolvedField.type.qname);
 	}
 
@@ -226,6 +238,7 @@ class MXHXRttiResolverTest extends Test {
 		var resolvedField = Lambda.find(resolvedClass.fields, field -> field.name == "integer");
 		Assert.notNull(resolvedField);
 		Assert.notNull(resolvedField.type);
+		Assert.isOfType(resolvedField.type, IMXHXAbstractSymbol);
 		Assert.equals("Int", resolvedField.type.qname);
 	}
 
@@ -236,6 +249,7 @@ class MXHXRttiResolverTest extends Test {
 		var resolvedField = Lambda.find(resolvedClass.fields, field -> field.name == "string");
 		Assert.notNull(resolvedField);
 		Assert.notNull(resolvedField.type);
+		Assert.isOfType(resolvedField.type, IMXHXClassSymbol);
 		Assert.equals("String", resolvedField.type.qname);
 	}
 
@@ -246,6 +260,7 @@ class MXHXRttiResolverTest extends Test {
 		var resolvedField = Lambda.find(resolvedClass.fields, field -> field.name == "unsignedInteger");
 		Assert.notNull(resolvedField);
 		Assert.notNull(resolvedField.type);
+		Assert.isOfType(resolvedField.type, IMXHXAbstractSymbol);
 		Assert.equals("UInt", resolvedField.type.qname);
 	}
 
@@ -256,6 +271,7 @@ class MXHXRttiResolverTest extends Test {
 		var resolvedField = Lambda.find(resolvedClass.fields, field -> field.name == "xml");
 		Assert.notNull(resolvedField);
 		Assert.notNull(resolvedField.type);
+		Assert.isOfType(resolvedField.type, IMXHXClassSymbol);
 		Assert.equals("Xml", resolvedField.type.qname);
 	}
 
@@ -266,6 +282,7 @@ class MXHXRttiResolverTest extends Test {
 		var resolvedField = Lambda.find(resolvedClass.fields, field -> field.name == "canBeNull");
 		Assert.notNull(resolvedField);
 		Assert.notNull(resolvedField.type);
+		Assert.isOfType(resolvedField.type, IMXHXAbstractSymbol);
 		Assert.equals("Null<Float>", resolvedField.type.qname);
 	}
 
@@ -276,6 +293,7 @@ class MXHXRttiResolverTest extends Test {
 		var resolvedField = Lambda.find(resolvedClass.fields, field -> field.name == "strictlyTyped");
 		Assert.notNull(resolvedField);
 		Assert.notNull(resolvedField.type);
+		Assert.isOfType(resolvedField.type, IMXHXClassSymbol);
 		Assert.equals("fixtures.TestPropertiesClass", resolvedField.type.qname);
 	}
 
@@ -286,6 +304,7 @@ class MXHXRttiResolverTest extends Test {
 		var resolvedField = Lambda.find(resolvedClass.fields, field -> field.name == "strictInterface");
 		Assert.notNull(resolvedField);
 		Assert.notNull(resolvedField.type);
+		Assert.isOfType(resolvedField.type, IMXHXInterfaceSymbol);
 		Assert.equals("fixtures.ITestPropertiesInterface", resolvedField.type.qname);
 	}
 
@@ -297,6 +316,7 @@ class MXHXRttiResolverTest extends Test {
 		Assert.notNull(resolvedField);
 		#if interp
 		Assert.notNull(resolvedField.type);
+		// Assert.isOfType(resolvedField.type, IMXHXEnumSymbol);
 		Assert.equals("fixtures.TestPropertyAbstractEnum", resolvedField.type.qname);
 		#else
 		Assert.isNull(resolvedField.type);
@@ -321,6 +341,7 @@ class MXHXRttiResolverTest extends Test {
 		var resolvedField = Lambda.find(resolvedClass.fields, field -> field.name == "classFromModuleWithDifferentName");
 		Assert.notNull(resolvedField);
 		Assert.notNull(resolvedField.type);
+		Assert.isOfType(resolvedField.type, IMXHXClassSymbol);
 		Assert.equals("fixtures.ModuleWithClassThatHasDifferentName.ThisClassHasADifferentNameThanItsModule", resolvedField.type.qname);
 	}
 
@@ -331,6 +352,7 @@ class MXHXRttiResolverTest extends Test {
 		var resolvedField = Lambda.find(resolvedClass.fields, field -> field.name == "array");
 		Assert.notNull(resolvedField);
 		Assert.notNull(resolvedField.type);
+		Assert.isOfType(resolvedField.type, IMXHXClassSymbol);
 		// TODO: fix the % that should be used only internally
 		Assert.equals("Array<%>", resolvedField.type.qname);
 	}
@@ -568,6 +590,7 @@ class MXHXRttiResolverTest extends Test {
 		Assert.isOfType(resolved, IMXHXFieldSymbol);
 		var fieldSymbol:IMXHXFieldSymbol = cast resolved;
 		Assert.notNull(fieldSymbol.type);
+		Assert.isOfType(fieldSymbol.type, IMXHXAbstractSymbol);
 		Assert.equals("Any", fieldSymbol.type.qname);
 	}
 
@@ -586,6 +609,7 @@ class MXHXRttiResolverTest extends Test {
 		Assert.isOfType(resolved, IMXHXFieldSymbol);
 		var fieldSymbol:IMXHXFieldSymbol = cast resolved;
 		Assert.notNull(fieldSymbol.type);
+		Assert.isOfType(fieldSymbol.type, IMXHXClassSymbol);
 		Assert.equals("Array<String>", fieldSymbol.type.qname);
 	}
 
@@ -604,6 +628,7 @@ class MXHXRttiResolverTest extends Test {
 		Assert.isOfType(resolved, IMXHXFieldSymbol);
 		var fieldSymbol:IMXHXFieldSymbol = cast resolved;
 		Assert.notNull(fieldSymbol.type);
+		Assert.isOfType(fieldSymbol.type, IMXHXAbstractSymbol);
 		Assert.equals("Bool", fieldSymbol.type.qname);
 	}
 
@@ -622,6 +647,7 @@ class MXHXRttiResolverTest extends Test {
 		Assert.isOfType(resolved, IMXHXFieldSymbol);
 		var fieldSymbol:IMXHXFieldSymbol = cast resolved;
 		Assert.notNull(fieldSymbol.type);
+		Assert.isOfType(fieldSymbol.type, IMXHXAbstractSymbol);
 		Assert.equals("Class<Dynamic>", fieldSymbol.type.qname);
 	}
 
@@ -640,6 +666,7 @@ class MXHXRttiResolverTest extends Test {
 		Assert.isOfType(resolved, IMXHXFieldSymbol);
 		var fieldSymbol:IMXHXFieldSymbol = cast resolved;
 		Assert.notNull(fieldSymbol.type);
+		Assert.isOfType(fieldSymbol.type, IMXHXClassSymbol);
 		Assert.equals("Date", fieldSymbol.type.qname);
 	}
 
@@ -658,6 +685,7 @@ class MXHXRttiResolverTest extends Test {
 		Assert.isOfType(resolved, IMXHXFieldSymbol);
 		var fieldSymbol:IMXHXFieldSymbol = cast resolved;
 		Assert.notNull(fieldSymbol.type);
+		Assert.isOfType(fieldSymbol.type, IMXHXAbstractSymbol);
 		Assert.equals("Dynamic", fieldSymbol.type.qname);
 	}
 
@@ -676,6 +704,7 @@ class MXHXRttiResolverTest extends Test {
 		Assert.isOfType(resolved, IMXHXFieldSymbol);
 		var fieldSymbol:IMXHXFieldSymbol = cast resolved;
 		Assert.notNull(fieldSymbol.type);
+		Assert.isOfType(fieldSymbol.type, IMXHXClassSymbol);
 		Assert.equals("EReg", fieldSymbol.type.qname);
 	}
 
@@ -694,6 +723,7 @@ class MXHXRttiResolverTest extends Test {
 		Assert.isOfType(resolved, IMXHXFieldSymbol);
 		var fieldSymbol:IMXHXFieldSymbol = cast resolved;
 		Assert.notNull(fieldSymbol.type);
+		Assert.isOfType(fieldSymbol.type, IMXHXAbstractSymbol);
 		Assert.equals("Float", fieldSymbol.type.qname);
 	}
 
@@ -712,6 +742,7 @@ class MXHXRttiResolverTest extends Test {
 		Assert.isOfType(resolved, IMXHXFieldSymbol);
 		var fieldSymbol:IMXHXFieldSymbol = cast resolved;
 		Assert.notNull(fieldSymbol.type);
+		Assert.isOfType(fieldSymbol.type, IMXHXAbstractSymbol);
 		Assert.equals("haxe.Function", fieldSymbol.type.qname);
 	}
 
@@ -730,6 +761,7 @@ class MXHXRttiResolverTest extends Test {
 		Assert.isOfType(resolved, IMXHXFieldSymbol);
 		var fieldSymbol:IMXHXFieldSymbol = cast resolved;
 		Assert.notNull(fieldSymbol.type);
+		Assert.isOfType(fieldSymbol.type, IMXHXAbstractSymbol);
 		Assert.equals("haxe.Function", fieldSymbol.type.qname);
 	}
 
@@ -748,6 +780,7 @@ class MXHXRttiResolverTest extends Test {
 		Assert.isOfType(resolved, IMXHXFieldSymbol);
 		var fieldSymbol:IMXHXFieldSymbol = cast resolved;
 		Assert.notNull(fieldSymbol.type);
+		Assert.isOfType(fieldSymbol.type, IMXHXAbstractSymbol);
 		Assert.equals("Int", fieldSymbol.type.qname);
 	}
 
@@ -766,6 +799,7 @@ class MXHXRttiResolverTest extends Test {
 		Assert.isOfType(resolved, IMXHXFieldSymbol);
 		var fieldSymbol:IMXHXFieldSymbol = cast resolved;
 		Assert.notNull(fieldSymbol.type);
+		Assert.isOfType(fieldSymbol.type, IMXHXClassSymbol);
 		Assert.equals("String", fieldSymbol.type.qname);
 	}
 
@@ -784,6 +818,7 @@ class MXHXRttiResolverTest extends Test {
 		Assert.isOfType(resolved, IMXHXFieldSymbol);
 		var fieldSymbol:IMXHXFieldSymbol = cast resolved;
 		Assert.notNull(fieldSymbol.type);
+		Assert.isOfType(fieldSymbol.type, IMXHXAbstractSymbol);
 		Assert.equals("Dynamic", fieldSymbol.type.qname);
 	}
 
@@ -802,6 +837,7 @@ class MXHXRttiResolverTest extends Test {
 		Assert.isOfType(resolved, IMXHXFieldSymbol);
 		var fieldSymbol:IMXHXFieldSymbol = cast resolved;
 		Assert.notNull(fieldSymbol.type);
+		Assert.isOfType(fieldSymbol.type, IMXHXAbstractSymbol);
 		Assert.equals("UInt", fieldSymbol.type.qname);
 	}
 
@@ -820,6 +856,7 @@ class MXHXRttiResolverTest extends Test {
 		Assert.isOfType(resolved, IMXHXFieldSymbol);
 		var fieldSymbol:IMXHXFieldSymbol = cast resolved;
 		Assert.notNull(fieldSymbol.type);
+		Assert.isOfType(fieldSymbol.type, IMXHXClassSymbol);
 		Assert.equals("Xml", fieldSymbol.type.qname);
 	}
 
@@ -839,6 +876,7 @@ class MXHXRttiResolverTest extends Test {
 		var fieldSymbol:IMXHXFieldSymbol = cast resolved;
 		#if interp
 		Assert.notNull(fieldSymbol.type);
+		// Assert.isOfType(fieldSymbol.type, IMXHXEnumSymbol);
 		Assert.equals("fixtures.TestPropertyAbstractEnum", fieldSymbol.type.qname);
 		#else
 		Assert.isNull(fieldSymbol.type);
@@ -879,6 +917,7 @@ class MXHXRttiResolverTest extends Test {
 		Assert.isOfType(resolved, IMXHXFieldSymbol);
 		var fieldSymbol:IMXHXFieldSymbol = cast resolved;
 		Assert.notNull(fieldSymbol.type);
+		Assert.isOfType(fieldSymbol.type, IMXHXAbstractSymbol);
 		Assert.equals("Null<Float>", fieldSymbol.type.qname);
 	}
 
