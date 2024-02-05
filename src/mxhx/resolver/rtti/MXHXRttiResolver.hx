@@ -534,6 +534,11 @@ class MXHXRttiResolver implements IMXHXResolver {
 		var typeQname = cTypeToQname(field.type);
 		if (typeQname != null) {
 			resolvedType = resolveQname(typeQname);
+			if (resolvedType == null) {
+				// type is included in RTTI data, but it is missing at runtime
+				// let's assume that it is an abstract
+				resolvedType = createMXHXAbstractSymbolForBuiltin(typeQname, []);
+			}
 		}
 		var isMethod = false;
 		var isReadable = false;

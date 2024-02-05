@@ -314,13 +314,9 @@ class MXHXRttiResolverTest extends Test {
 		Assert.isOfType(resolvedClass, IMXHXClassSymbol);
 		var resolvedField = Lambda.find(resolvedClass.fields, field -> field.name == "abstractEnumValue");
 		Assert.notNull(resolvedField);
-		#if interp
 		Assert.notNull(resolvedField.type);
 		// Assert.isOfType(resolvedField.type, IMXHXEnumSymbol);
 		Assert.equals("fixtures.TestPropertyAbstractEnum", resolvedField.type.qname);
-		#else
-		Assert.isNull(resolvedField.type);
-		#end
 	}
 
 	public function testResolveEnumValueField():Void {
@@ -874,13 +870,9 @@ class MXHXRttiResolverTest extends Test {
 		Assert.notNull(resolved);
 		Assert.isOfType(resolved, IMXHXFieldSymbol);
 		var fieldSymbol:IMXHXFieldSymbol = cast resolved;
-		#if interp
 		Assert.notNull(fieldSymbol.type);
 		// Assert.isOfType(fieldSymbol.type, IMXHXEnumSymbol);
 		Assert.equals("fixtures.TestPropertyAbstractEnum", fieldSymbol.type.qname);
-		#else
-		Assert.isNull(fieldSymbol.type);
-		#end
 	}
 
 	public function testResolveFieldTypeEnumValue():Void {
