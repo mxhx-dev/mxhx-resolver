@@ -14,12 +14,11 @@
 
 package mxhx.resolver.rtti;
 
-import haxe.rtti.CType.ClassField;
-import haxe.rtti.CType.Classdef;
 import haxe.rtti.CType;
 import haxe.rtti.XmlParser;
 import mxhx.internal.resolver.MXHXAbstractSymbol;
 import mxhx.internal.resolver.MXHXClassSymbol;
+import mxhx.internal.resolver.MXHXEnumFieldSymbol;
 import mxhx.internal.resolver.MXHXEnumSymbol;
 import mxhx.internal.resolver.MXHXFieldSymbol;
 import mxhx.internal.resolver.MXHXInterfaceSymbol;
@@ -443,9 +442,9 @@ class MXHXRttiResolver implements IMXHXResolver {
 		var result = new MXHXEnumSymbol(name, pack);
 		result.qname = qname;
 		result.module = moduleName;
-		// result.fields = resolvedEnum.getConstructors().map(function(enumConstructorName:String):IMXHXEnumFieldSymbol {
-		// 	return new MXHXEnumFieldSymbol(enumConstructorName, result);
-		// });
+		result.fields = resolvedEnum.getConstructors().map(function(enumConstructorName:String):IMXHXEnumFieldSymbol {
+			return new MXHXEnumFieldSymbol(enumConstructorName, result);
+		});
 		return result;
 	}
 
