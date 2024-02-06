@@ -44,6 +44,7 @@ class MXHXRttiResolver implements IMXHXResolver {
 	private static final TYPE_ARRAY = "Array";
 	private static final ATTRIBUTE_TYPE = "type";
 	private static final META_ENUM = ":enum";
+	private static final META_DEFAULT_XML_PROPERTY = "defaultXmlProperty";
 
 	public function new() {
 		manifests = MXHXResolvers.emitMappings();
@@ -327,7 +328,7 @@ class MXHXRttiResolver implements IMXHXResolver {
 		// 	var result:IMXHXEventSymbol = new MXHXEventSymbol(eventName, resolvedType);
 		// 	return result;
 		// }).filter(eventSymbol -> eventSymbol != null);
-		// result.defaultProperty = getDefaultProperty(classDefinition);
+		result.defaultProperty = getDefaultProperty(classdef);
 		return result;
 	}
 
@@ -699,5 +700,22 @@ class MXHXRttiResolver implements IMXHXResolver {
 			return null;
 		}
 		return qnameType;
+	}
+
+	private static function getDefaultProperty(classdef:Classdef):String {
+		var defaultPropertyMeta = Lambda.find(classdef.meta, item -> item.name == META_DEFAULT_XML_PROPERTY
+			|| item.name == ":" + META_DEFAULT_XML_PROPERTY);
+		if (defaultPropertyMeta == null) {
+			return null;
+		}
+		if (defaultPropertyMeta.params == null || defaultPropertyMeta.params.length != 1) {
+			throw 'The @${defaultPropertyMeta.name} meta must have one property name';
+		}
+		var propertyName = defaultPropertyMeta.params[0];
+		if (propertyName == null || !~/^("|').+\1$/.match(propertyName)) {
+			throw 'The @${META_DEFAULT_XML_PROPERTY} meta param must be a string';
+			return null;
+		}
+		return propertyName.substring(1, propertyName.length - 1);
 	}
 }
