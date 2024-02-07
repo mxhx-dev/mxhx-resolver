@@ -261,7 +261,12 @@ class MXHXRttiResolver implements IMXHXResolver {
 		result.qname = qname;
 		var resolvedSuperClass = Type.getSuperClass(resolvedClass);
 		if (resolvedSuperClass != null) {
-			result.superClass = cast(resolveQname(classToQname(resolvedSuperClass)), IMXHXClassSymbol);
+			var superClassQname = classToQname(resolvedSuperClass);
+			var classType = resolveQname(superClassQname);
+			if (!(classType is IMXHXInterfaceSymbol)) {
+				throw 'Expected class: ${classType.qname}. Is it missing @:rtti metadata?';
+			}
+			result.superClass = cast(classType, IMXHXClassSymbol);
 		}
 		var fields:Array<IMXHXFieldSymbol> = [];
 		// fields = fields.concat(Type.getInstanceFields(resolvedClass).map(field -> createMXHXFieldSymbolForTypeField(field, false)));
@@ -298,11 +303,19 @@ class MXHXRttiResolver implements IMXHXResolver {
 		qnameToMXHXTypeSymbolLookup.set(qname, result);
 
 		if (classdef.superClass != null) {
-			result.superClass = cast(resolveQname(classdef.superClass.path), IMXHXClassSymbol);
+			var classType = resolveQname(classdef.superClass.path);
+			if (!(classType is IMXHXClassSymbol)) {
+				throw 'Expected class: ${classType.qname}. Is it missing @:rtti metadata?';
+			}
+			result.superClass = cast(classType, IMXHXClassSymbol);
 		}
 		var resolvedInterfaces:Array<IMXHXInterfaceSymbol> = [];
 		for (currentInterface in classdef.interfaces) {
-			var resolvedInterface = cast(resolveQname(currentInterface.path), IMXHXInterfaceSymbol);
+			var interfaceType = resolveQname(currentInterface.path);
+			if (!(interfaceType is IMXHXInterfaceSymbol)) {
+				throw 'Expected interface: ${interfaceType.qname}. Is it missing @:rtti metadata?';
+			}
+			var resolvedInterface = cast(interfaceType, IMXHXInterfaceSymbol);
 			resolvedInterfaces.push(resolvedInterface);
 		}
 		result.interfaces = resolvedInterfaces;
@@ -360,7 +373,11 @@ class MXHXRttiResolver implements IMXHXResolver {
 
 		var resolvedInterfaces:Array<IMXHXInterfaceSymbol> = [];
 		for (currentInterface in classdef.interfaces) {
-			var resolvedInterface = cast(resolveQname(currentInterface.path), IMXHXInterfaceSymbol);
+			var interfaceType = resolveQname(currentInterface.path);
+			if (!(interfaceType is IMXHXInterfaceSymbol)) {
+				throw 'Expected interface: ${interfaceType.qname}. Is it missing @:rtti metadata?';
+			}
+			var resolvedInterface = cast(interfaceType, IMXHXInterfaceSymbol);
 			resolvedInterfaces.push(resolvedInterface);
 		}
 		result.interfaces = resolvedInterfaces;
