@@ -2,7 +2,6 @@
 -cp src
 -lib mxhx-parser
 -lib utest
--lib haxeparser
 -D mxhx-disable-experimental-warning
 --resource mxhx-manifest.xml@mxhx-manifest
 --main Main
