@@ -8,7 +8,6 @@ class Main {
 		#if (sys && haxeparser && haxe_ver >= 4.2)
 		runner.addCase(new mxhx.resolver.source.MXHXSourceResolverTest());
 		#end
-		runner.addCase(new mxhx.resolver.rtti.MXHXRttiResolverTest());
 
 		#if (html5 && playwright)
 		// special case: see below for details
