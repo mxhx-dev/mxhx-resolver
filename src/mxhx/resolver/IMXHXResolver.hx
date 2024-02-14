@@ -14,6 +14,10 @@
 
 package mxhx.resolver;
 
+import mxhx.symbols.IMXHXFieldSymbol;
+import mxhx.symbols.IMXHXSymbol;
+import mxhx.symbols.IMXHXTypeSymbol;
+
 /**
 	An MXHX symbol resolver.
 **/

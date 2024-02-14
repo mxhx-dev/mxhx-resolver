@@ -1,4 +1,4 @@
-# MXHX API documentation
+# MXHX Resolver API documentation
 
 The API documentation is created with [dox](https://github.com/HaxeFoundation/dox).
 

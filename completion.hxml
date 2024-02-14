@@ -1,4 +1,5 @@
 -cp src
 -cp src-dev
 -lib mxhx-parser
+-lib mxhx-symbols
 --main Main

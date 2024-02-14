@@ -1,8 +1,8 @@
 package mxhx.resolver.macro;
 
 import mxhx.parser.MXHXParser;
-import mxhx.resolver.IMXHXFieldSymbol;
-import mxhx.resolver.IMXHXTypeSymbol;
+import mxhx.symbols.IMXHXFieldSymbol;
+import mxhx.symbols.IMXHXTypeSymbol;
 import mxhx.resolver.macro.MXHXMacroResolver;
 import utest.Test;
 #if !macro

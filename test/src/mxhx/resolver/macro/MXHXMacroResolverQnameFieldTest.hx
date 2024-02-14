@@ -1,5 +1,6 @@
 package mxhx.resolver.macro;
 
+import mxhx.symbols.IMXHXClassSymbol;
 import utest.Test;
 #if !macro
 import utest.Assert;
