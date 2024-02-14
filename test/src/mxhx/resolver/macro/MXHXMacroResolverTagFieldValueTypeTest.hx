@@ -207,6 +207,18 @@ class MXHXMacroResolverTagFieldValueTypeTest extends Test {
 		Assert.equals("fixtures.TestPropertyAbstractEnum", resolvedFieldType);
 	}
 
+	public function testResolveFieldValueTypeAbstractEnumValue1():Void {
+		var resolvedFieldType = resolveTagType('
+			<tests:TestPropertiesClass xmlns:mx="https://ns.mxhx.dev/2024/basic" xmlns:tests="https://ns.mxhx.dev/2024/tests">
+				<tests:abstractEnumValue>
+					<tests:TestPropertyAbstractEnum.Value1/>
+				</tests:abstractEnumValue>
+			</tests:TestPropertiesClass>
+		', 188);
+		Assert.notNull(resolvedFieldType);
+		Assert.equals("Value1", resolvedFieldType);
+	}
+
 	public function testResolveFieldValueTypeEnumValue():Void {
 		var resolvedFieldType = resolveTagType('
 			<tests:TestPropertiesClass xmlns:mx="https://ns.mxhx.dev/2024/basic" xmlns:tests="https://ns.mxhx.dev/2024/tests">
