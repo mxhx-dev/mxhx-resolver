@@ -4,7 +4,11 @@ import utest.ui.Report;
 class Main {
 	public static function main():Void {
 		var runner = new Runner();
-		runner.addCase(new mxhx.resolver.macro.MXHXMacroResolverTest());
+		runner.addCase(new mxhx.resolver.macro.MXHXMacroResolverQnameTest());
+		runner.addCase(new mxhx.resolver.macro.MXHXMacroResolverQnameFieldTest());
+		runner.addCase(new mxhx.resolver.macro.MXHXMacroResolverTagTypeTest());
+		runner.addCase(new mxhx.resolver.macro.MXHXMacroResolverTagFieldTypeTest());
+		runner.addCase(new mxhx.resolver.macro.MXHXMacroResolverTagFieldValueTypeTest());
 
 		#if (html5 && playwright)
 		// special case: see below for details
