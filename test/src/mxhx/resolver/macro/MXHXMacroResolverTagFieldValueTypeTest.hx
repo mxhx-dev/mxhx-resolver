@@ -195,7 +195,7 @@ class MXHXMacroResolverTagFieldValueTypeTest extends Test {
 		Assert.equals("Xml", resolvedFieldType);
 	}
 
-	public function testResolveFieldValueTypeAbstractEnumValue():Void {
+	public function testResolveFieldValueTypeAbstractEnumValueEmpty():Void {
 		var resolvedFieldType = resolveTagType('
 			<tests:TestPropertiesClass xmlns:mx="https://ns.mxhx.dev/2024/basic" xmlns:tests="https://ns.mxhx.dev/2024/tests">
 				<tests:abstractEnumValue>
@@ -207,7 +207,7 @@ class MXHXMacroResolverTagFieldValueTypeTest extends Test {
 		Assert.equals("fixtures.TestPropertyAbstractEnum", resolvedFieldType);
 	}
 
-	public function testResolveFieldValueTypeAbstractEnumValue1():Void {
+	public function testResolveFieldValueTypeAbstractEnumFieldValue():Void {
 		var resolvedFieldType = resolveTagType('
 			<tests:TestPropertiesClass xmlns:mx="https://ns.mxhx.dev/2024/basic" xmlns:tests="https://ns.mxhx.dev/2024/tests">
 				<tests:abstractEnumValue>
@@ -219,7 +219,7 @@ class MXHXMacroResolverTagFieldValueTypeTest extends Test {
 		Assert.equals("Value1", resolvedFieldType);
 	}
 
-	public function testResolveFieldValueTypeEnumValue():Void {
+	public function testResolveFieldValueTypeEnumValueEmpty():Void {
 		var resolvedFieldType = resolveTagType('
 			<tests:TestPropertiesClass xmlns:mx="https://ns.mxhx.dev/2024/basic" xmlns:tests="https://ns.mxhx.dev/2024/tests">
 				<tests:enumValue>
@@ -229,6 +229,18 @@ class MXHXMacroResolverTagFieldValueTypeTest extends Test {
 		', 155);
 		Assert.notNull(resolvedFieldType);
 		Assert.equals("fixtures.TestPropertyEnum", resolvedFieldType);
+	}
+
+	public function testResolveFieldValueTypeEnumFieldValue():Void {
+		var resolvedFieldType = resolveTagType('
+			<tests:TestPropertiesClass xmlns:mx="https://ns.mxhx.dev/2024/basic" xmlns:tests="https://ns.mxhx.dev/2024/tests">
+				<tests:enumValue>
+					<tests:TestPropertyEnum.Value1/>
+				</tests:enumValue>
+			</tests:TestPropertiesClass>
+		', 172);
+		Assert.notNull(resolvedFieldType);
+		Assert.equals("Value1", resolvedFieldType);
 	}
 
 	public function testResolveFieldValueTypeNull():Void {
