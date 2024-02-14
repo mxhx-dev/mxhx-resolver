@@ -13,6 +13,7 @@ class MXHXEnumFieldSymbol implements IMXHXEnumFieldSymbol {
 	public var parent:IMXHXEnumSymbol;
 	public var args:Array<IMXHXArgumentSymbol>;
 	public var meta:Array<MetadataEntry>;
+	public var inlineExpr:Null<String>;
 
 	public function new(name:String, ?parent:IMXHXEnumSymbol, ?args:Array<IMXHXArgumentSymbol>) {
 		this.name = name;
