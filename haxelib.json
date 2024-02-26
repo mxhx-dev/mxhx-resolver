@@ -7,6 +7,7 @@
   "version": "1.0.0",
   "classPath": "src",
   "dependencies": {
+    "mxhx-parser": "git:https://github.com/mxhx-dev/mxhx-parser.git",
     "mxhx-symbols": "git:https://github.com/mxhx-dev/mxhx-symbols.git",
     "mxhx-manifest": "git:https://github.com/mxhx-dev/mxhx-manifest.git"
   },
