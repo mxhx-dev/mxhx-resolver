@@ -1,6 +1,7 @@
 -cp ../src
 -lib mxhx-parser
 -lib mxhx-symbols
+-lib mxhx-manifest
 -D doc_gen
 --macro include("mxhx.resolver")
 --no-output

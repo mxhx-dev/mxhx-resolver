@@ -8,7 +8,8 @@
   "classPath": "src",
   "dependencies": {
     "mxhx-parser": "git:https://github.com/mxhx-dev/mxhx-parser.git",
-    "mxhx-symbols": "git:https://github.com/mxhx-dev/mxhx-symbols.git"
+    "mxhx-symbols": "git:https://github.com/mxhx-dev/mxhx-symbols.git",
+    "mxhx-manifest": "git:https://github.com/mxhx-dev/mxhx-manifest.git"
   },
   "contributors": ["bowlerhat"],
   "releasenote": "Initial release"

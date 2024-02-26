@@ -3,7 +3,7 @@ package mxhx.resolver;
 import haxe.macro.Expr;
 #if macro
 import haxe.macro.Context;
-import mxhx.resolver.manifest.MXHXManifestTools;
+import mxhx.manifest.MXHXManifestTools;
 #end
 
 class MXHXResolvers {

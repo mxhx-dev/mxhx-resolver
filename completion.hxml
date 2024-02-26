@@ -2,4 +2,5 @@
 -cp src-dev
 -lib mxhx-parser
 -lib mxhx-symbols
+-lib mxhx-manifest
 --main Main
