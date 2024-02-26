@@ -1,4 +1,4 @@
-# MXHX Parser Change Log
+# MXHX Resolver Change Log
 
 ## 1.0.0 (????-??-??)
 
