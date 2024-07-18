@@ -28,4 +28,5 @@ interface IMXHXResolver {
 	public function resolveTagField(tagData:IMXHXTagData, fieldName:String):IMXHXFieldSymbol;
 	public function resolveQname(qname:String):IMXHXTypeSymbol;
 	public function getTagNamesForQname(qname:String):Map<String, String>;
+	public function getTypes():Array<IMXHXTypeSymbol>;
 }
