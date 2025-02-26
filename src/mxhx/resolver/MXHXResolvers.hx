@@ -3,6 +3,7 @@ package mxhx.resolver;
 import haxe.macro.Expr;
 #if macro
 import haxe.macro.Context;
+import mxhx.manifest.MXHXManifestEntry;
 import mxhx.manifest.MXHXManifestTools;
 #end
 
@@ -11,22 +12,22 @@ class MXHXResolvers {
 	private static final LANGUAGE_URI_BASIC_2024 = "https://ns.mxhx.dev/2024/basic";
 	private static final LANGUAGE_URI_FULL_2024 = "https://ns.mxhx.dev/2024/mxhx";
 	private static final LANGUAGE_MAPPINGS_2024 = [
-		"Array" => "Array",
-		"Bool" => "Bool",
-		"Class" => "Class",
-		"Date" => "Date",
-		"EReg" => "EReg",
-		"Float" => "Float",
-		"Function" => "haxe.Constraints.Function",
-		"Int" => "Int",
-		"Object" => "Any",
-		"String" => "String",
-		"Struct" => "Dynamic",
-		"UInt" => "UInt",
-		"Xml" => "Xml",
+		"Array" => new MXHXManifestEntry("Array", null, ["type"]),
+		"Bool" => new MXHXManifestEntry("Bool"),
+		"Class" => new MXHXManifestEntry("Class"),
+		"Date" => new MXHXManifestEntry("Date"),
+		"EReg" => new MXHXManifestEntry("EReg"),
+		"Float" => new MXHXManifestEntry("Float"),
+		"Function" => new MXHXManifestEntry("Function", "haxe.Constraints.Function"),
+		"Int" => new MXHXManifestEntry("Int"),
+		"Object" => new MXHXManifestEntry("Any"),
+		"String" => new MXHXManifestEntry("String"),
+		"Struct" => new MXHXManifestEntry("Dynamic"),
+		"UInt" => new MXHXManifestEntry("UInt"),
+		"Xml" => new MXHXManifestEntry("Xml"),
 	];
 
-	private static final manifests:Map<String, Map<String, String>> = [
+	private static final manifests:Map<String, Map<String, MXHXManifestEntry>> = [
 		LANGUAGE_URI_BASIC_2024 => LANGUAGE_MAPPINGS_2024,
 		LANGUAGE_URI_FULL_2024 => LANGUAGE_MAPPINGS_2024,
 	];
@@ -35,7 +36,7 @@ class MXHXResolvers {
 		Adds a custom mapping from a namespace URI to a list of components in
 		the namespace.
 	**/
-	public static function registerMappings(uri:String, mappings:Map<String, String>):Void {
+	public static function registerMappings(uri:String, mappings:Map<String, MXHXManifestEntry>):Void {
 		manifests.set(uri, mappings);
 	}
 
@@ -57,7 +58,7 @@ class MXHXResolvers {
 		}
 	}
 
-	public static function getMappingsForUri(uri:String):Map<String, String> {
+	public static function getMappingsForUri(uri:String):Map<String, MXHXManifestEntry> {
 		var mappings = manifests.get(uri);
 		if (mappings == null) {
 			return null;
@@ -65,7 +66,7 @@ class MXHXResolvers {
 		return mappings.copy();
 	}
 
-	public static function getMappings():Map<String, Map<String, String>> {
+	public static function getMappings():Map<String, Map<String, MXHXManifestEntry>> {
 		return manifests.copy();
 	}
 	#end
@@ -76,11 +77,20 @@ class MXHXResolvers {
 	}
 
 	public static macro function emitMappings():Expr {
-		var exprs:Array<Expr> = [macro var mappings:Map<String, Map<String, String>> = []];
+		var exprs:Array<Expr> = [
+			macro var mappings:Map<String, Map<String, mxhx.manifest.MXHXManifestEntry>> = []
+		];
 		for (uri => mappings in manifests) {
-			exprs.push(macro var uriMappings:Map<String, String> = []);
-			for (key => value in mappings) {
-				exprs.push(macro uriMappings.set($v{key}, $v{value}));
+			exprs.push(macro var uriMappings:Map<String, mxhx.manifest.MXHXManifestEntry> = []);
+			for (id => manifestEntry in mappings) {
+				if (manifestEntry.params != null) {
+					exprs.push(macro uriMappings.set($v{id},
+						new mxhx.manifest.MXHXManifestEntry($v{manifestEntry.id}, $v{manifestEntry.qname}, $v{manifestEntry.params})));
+				} else if (manifestEntry.id != manifestEntry.qname) {
+					exprs.push(macro uriMappings.set($v{id}, new mxhx.manifest.MXHXManifestEntry($v{manifestEntry.id}, $v{manifestEntry.qname})));
+				} else {
+					exprs.push(macro uriMappings.set($v{id}, new mxhx.manifest.MXHXManifestEntry($v{manifestEntry.id})));
+				}
 			}
 			exprs.push(macro mappings.set($v{uri}, uriMappings));
 		}

@@ -14,6 +14,7 @@
 
 package mxhx.resolver;
 
+import mxhx.manifest.MXHXManifestEntry;
 import mxhx.symbols.IMXHXFieldSymbol;
 import mxhx.symbols.IMXHXSymbol;
 import mxhx.symbols.IMXHXTypeSymbol;
@@ -22,11 +23,12 @@ import mxhx.symbols.IMXHXTypeSymbol;
 	An MXHX symbol resolver.
 **/
 interface IMXHXResolver {
-	public function registerManifest(uri:String, mappings:Map<String, String>):Void;
+	public function registerManifest(uri:String, mappings:Map<String, MXHXManifestEntry>):Void;
 	public function resolveTag(tagData:IMXHXTagData):IMXHXSymbol;
 	public function resolveAttribute(attributeData:IMXHXTagAttributeData):IMXHXSymbol;
 	public function resolveTagField(tagData:IMXHXTagData, fieldName:String):IMXHXFieldSymbol;
 	public function resolveQname(qname:String):IMXHXTypeSymbol;
 	public function getTagNamesForQname(qname:String):Map<String, String>;
+	public function getParamsForQname(tagName:String):Array<String>;
 	public function getTypes():Array<IMXHXTypeSymbol>;
 }
