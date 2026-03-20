@@ -7,9 +7,9 @@
   "version": "1.0.0",
   "classPath": "src",
   "dependencies": {
-    "mxhx-xml-parser": "git:https://github.com/mxhx-dev/mxhx-xml-parser.git",
+    "mxhx-xml-parser": "",
     "mxhx-symbols": "git:https://github.com/mxhx-dev/mxhx-symbols.git",
-    "mxhx-manifest": "git:https://github.com/mxhx-dev/mxhx-manifest.git"
+    "mxhx-manifest": ""
   },
   "contributors": ["bowlerhat"],
   "releasenote": "Initial release"
