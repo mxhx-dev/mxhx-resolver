@@ -10,8 +10,8 @@ jobs:
   haxelib:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/upload-artifact@v4
+      - uses: actions/checkout@v6
+      - uses: actions/upload-artifact@v7
         with:
           name: mxhx-resolver-haxelib
           path: |
@@ -25,21 +25,21 @@ jobs:
   api:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: krdlab/setup-haxe@v1
+      - uses: actions/checkout@v6
+      - uses: krdlab/setup-haxe@v2
         with:
           haxe-version: 4.0.5
       - name: Set up Haxelib dependencies
         run: |
           haxelib install dox --quiet
-          haxelib git mxhx-parser https://github.com/mxhx-dev/mxhx-parser.git --quiet
+          haxelib git mxhx-xml-parser https://github.com/mxhx-dev/mxhx-xml-parser.git --quiet
           haxelib git mxhx-symbols https://github.com/mxhx-dev/mxhx-symbols.git --quiet
           haxelib git mxhx-manifest https://github.com/mxhx-dev/mxhx-manifest.git --quiet
           haxelib dev mxhx-resolver ${{ github.workspace }}
       - name: Build API reference
         working-directory: docs
         run: haxe docs.hxml
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         with:
           name: mxhx-resolver-docs
           path: bin/api/

@@ -1,5 +1,5 @@
 -cp ../src
--lib mxhx-parser
+-lib mxhx-xml-parser
 -lib mxhx-symbols
 -lib mxhx-manifest
 -D doc_gen
